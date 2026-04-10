@@ -653,239 +653,206 @@ body { background:#0d1117; color:#e0f0ff; font-family:'Exo 2',Segoe UI,Arial,san
 </div><!-- /lay -->
 <div id="toasts"></div>
 
-<!-- VBSCRIPT -->
-<script language="VBScript">
-Option Explicit
-
-Function URLDecode(s)
-    Dim i, c, h
-    URLDecode = ""
-    i = 1
-    Do While i <= Len(s)
-        c = Mid(s, i, 1)
-        If c = "%" And i + 2 <= Len(s) Then
-            h = Mid(s, i + 1, 2)
-            URLDecode = URLDecode & Chr(CInt("&H" & h))
-            i = i + 3
-        Else
-            URLDecode = URLDecode & c
-            i = i + 1
-        End If
-    Loop
-End Function
-
-Function GetBase()
-    Dim p, fso
-    Set fso = CreateObject("Scripting.FileSystemObject")
-    p = document.location.pathname
-    p = URLDecode(p)
-    p = Replace(p, "/", "\")
-    Do While Left(p,1) = "\" : p = Mid(p,2) : Loop
-    If InStr(p, ":") = 0 Then
-        GetBase = "D:\Pendrive Tecnico MF"
-    Else
-        GetBase = Left(p, InStrRev(p,"\") - 1)
-    End If
-    If Not fso.FolderExists(GetBase) Then
-        GetBase = "D:\Pendrive Tecnico MF"
-    End If
-End Function
-
-Function ReadCfg(k)
-    Dim fso, f, base, cfg, l, pp
-    base = GetBase()
-    cfg  = base & "\config\dados.ini"
-    Set fso = CreateObject("Scripting.FileSystemObject")
-    ReadCfg = ""
-    If Not fso.FileExists(cfg) Then Exit Function
-    Set f = fso.OpenTextFile(cfg, 1, False, -1)
-    Do While Not f.AtEndOfStream
-        l = f.ReadLine
-        pp = Split(l, "=", 2)
-        If UBound(pp) = 1 Then
-            If Trim(pp(0)) = k Then ReadCfg = Trim(pp(1)) : Exit Do
-        End If
-    Loop
-    f.Close
-End Function
-
-Sub WriteCfg(k, v)
-    Dim fso, f, out, base, cfg, l, pp, tmp, found
-    base = GetBase()
-    cfg  = base & "\config\dados.ini"
-    Set fso = CreateObject("Scripting.FileSystemObject")
-    If Not fso.FolderExists(base & "\config") Then fso.CreateFolder base & "\config"
-    tmp = "" : found = False
-    If fso.FileExists(cfg) Then
-        Set f = fso.OpenTextFile(cfg, 1, False, -1)
-        Do While Not f.AtEndOfStream
-            l = f.ReadLine
-            pp = Split(l, "=", 2)
-            If UBound(pp) = 1 And Trim(pp(0)) = k Then
-                tmp = tmp & k & "=" & v & Chr(10) : found = True
-            Else
-                tmp = tmp & l & Chr(10)
-            End If
-        Loop
-        f.Close
-    End If
-    If Not found Then tmp = tmp & k & "=" & v & Chr(10)
-    Set out = fso.OpenTextFile(cfg, 2, True, -1)
-    out.Write tmp
-    out.Close
-End Sub
-
-Function ReadFile(fp)
-    Dim fso, f
-    Set fso = CreateObject("Scripting.FileSystemObject")
-    ReadFile = ""
-    If fso.FileExists(fp) Then
-        Set f = fso.OpenTextFile(fp, 1, False, -1)
-        ReadFile = f.ReadAll
-        f.Close
-    End If
-End Function
-
-Function ListRelatorios()
-    Dim fso, folder, base, rDir, fi, result, arr(), cnt, i, j, tmp
-    base = GetBase()
-    rDir = base & "\relatorios"
-    result = ""
-    Set fso = CreateObject("Scripting.FileSystemObject")
-    If Not fso.FolderExists(rDir) Then
-        fso.CreateFolder rDir : ListRelatorios = "" : Exit Function
-    End If
-    Set folder = fso.GetFolder(rDir)
-    cnt = 0 : ReDim arr(0)
-    For Each fi In folder.Files
-        If LCase(Right(fi.Name,4)) = ".txt" Or LCase(Right(fi.Name,5)) = ".html" Then
-            cnt = cnt + 1 : ReDim Preserve arr(cnt-1)
-            arr(cnt-1) = fi.Name & "|" & fi.Path & "|" & CStr(fi.DateLastModified)
-        End If
-    Next
-    For i = 0 To cnt-2
-        For j = i+1 To cnt-1
-            If arr(i) < arr(j) Then tmp=arr(i):arr(i)=arr(j):arr(j)=tmp
-        Next
-    Next
-    For i = 0 To cnt-1 : result = result & arr(i) & Chr(10) : Next
-    ListRelatorios = result
-End Function
-
-Sub RunPS1Admin(s, args)
-    Dim sa
-    Set sa = CreateObject("Shell.Application")
-    sa.ShellExecute "powershell.exe", _
-        "-NoProfile -ExecutionPolicy Bypass -File """ & s & """ " & args, "", "runas", 1
-End Sub
-
-Sub RunBatAdmin(s)
-    Dim sa
-    Set sa = CreateObject("Shell.Application")
-    sa.ShellExecute "cmd.exe", "/c """ & s & """ & pause", "", "runas", 1
-End Sub
-
-Sub RunPS1(s, args)
-    Dim sa
-    Set sa = CreateObject("Shell.Application")
-    sa.ShellExecute "powershell.exe", _
-        "-NoProfile -ExecutionPolicy Bypass -File """ & s & """ " & args, "", "", 1
-End Sub
-
-Sub OpenDir(d)
-    Dim sh : Set sh = CreateObject("WScript.Shell")
-    sh.Run "explorer.exe """ & d & """", 1, False
-End Sub
-
-Sub OpenURL(url)
-    Dim sh : Set sh = CreateObject("WScript.Shell")
-    sh.Run url, 1, False
-End Sub
-
-Sub VBS_Diag(cli, ctx, obs, nm)
-    Dim b, sa, psArgs
-    b = GetBase()
-    Set sa = CreateObject("Shell.Application")
-    psArgs = "-NoProfile -ExecutionPolicy Bypass -File """ & b & "\scripts\diagnostico.ps1"" " & _
-        "-ClienteNome ''" & Replace(cli,"'","") & "'' " & _
-        "-Contexto ''" & Replace(ctx,"'","") & "'' " & _
-        "-Observacoes ''" & Replace(obs,"'","") & "'' " & _
-        "-TecnicoNome ''" & Replace(nm,"'","") & "'' " & _
-        "-OutputPath ''" & b & "\relatorios''"
-    sa.ShellExecute "powershell.exe", psArgs, "", "runas", 1
-End Sub
-
-Sub VBS_Limpeza()
-    RunBatAdmin GetBase() & "\scripts\limpeza.bat"
-End Sub
-
-Sub VBS_Rede(op)
-    Dim b : b = GetBase()
-    RunPS1Admin b & "\scripts\rede.ps1", "-Acao " & op
-End Sub
-
-Sub VBS_Drivers(a)
-    RunPS1Admin GetBase() & "\scripts\drivers.ps1", "-Acao " & a
-End Sub
-
-Sub VBS_Instalar(pkg, nm)
-    Dim b, sa
-    b = GetBase()
-    Set sa = CreateObject("Shell.Application")
-    sa.ShellExecute "cmd.exe", "/c """ & b & "\scripts\instalar.bat"" """ & pkg & """ """ & nm & """ & pause", "", "runas", 1
-End Sub
-
-Sub VBS_WU(a)
-    RunPS1Admin GetBase() & "\scripts\windows-update.ps1", "-Acao " & a
-End Sub
-
-Sub VBS_Tool(t)
-    RunPS1 GetBase() & "\scripts\abrir-ferramenta.ps1", "-Ferramenta " & t
-End Sub
-
-Sub VBS_Admin(t)
-    RunBatAdmin GetBase() & "\scripts\runas-admin.bat " & t
-End Sub
-
-Sub VBS_GitHub(a, repo, branch, tok)
-    Dim args : args = "-Acao " & a & " -Repo """ & repo & """ -Branch """ & branch & """"
-    If tok <> "" Then args = args & " -Token """ & tok & """"
-    RunPS1Admin GetBase() & "\scripts\atualizar-github.ps1", args
-End Sub
-
-Sub VBS_BaixarTools()
-    RunPS1Admin GetBase() & "\scripts\baixar-ferramentas.ps1", ""
-End Sub
-
-Sub VBS_AbrirRelats()
-    OpenDir GetBase() & "\relatorios"
-End Sub
-
-Sub VBS_Pnputil()
-    Dim sa : Set sa = CreateObject("Shell.Application")
-    sa.ShellExecute "pnputil.exe", "/scan-devices", "", "runas", 1
-End Sub
-
-Sub VBS_CleanBrowser()
-    Dim sa : Set sa = CreateObject("Shell.Application")
-    sa.ShellExecute "powershell.exe", "-NoProfile -ExecutionPolicy Bypass -Command ""Remove-Item -Recurse -Force -EA SilentlyContinue $env:LOCALAPPDATA\Google\Chrome\User` Data\Default\Cache,$env:LOCALAPPDATA\Microsoft\Edge\User` Data\Default\Cache; Write-Host 'Cache limpo!'; Start-Sleep 2""", "", "runas", 1
-End Sub
-
-Sub VBS_CleanLogs()
-    Dim sa : Set sa = CreateObject("Shell.Application")
-    sa.ShellExecute "powershell.exe", "-NoProfile -ExecutionPolicy Bypass -Command ""Get-EventLog -LogName * | ForEach-Object { Clear-EventLog -LogName $_.Log -EA SilentlyContinue }; Write-Host 'Logs limpos!'; Start-Sleep 2""", "", "runas", 1
-End Sub
-</script>
-
-<!-- JAVASCRIPT -->
+<!-- ENGINE (JavaScript puro — compatível com IE=edge) -->
 <script language="JavaScript">
-// Detecção de ambiente
+
+// ── FileSystem / Shell helpers ──────────────────────────
+var _fso = null, _shell = null, _sa = null;
+function fso()   { if(!_fso)   _fso   = new ActiveXObject('Scripting.FileSystemObject'); return _fso; }
+function shell() { if(!_shell) _shell = new ActiveXObject('WScript.Shell'); return _shell; }
+function sa()    { if(!_sa)    _sa    = new ActiveXObject('Shell.Application'); return _sa; }
+
+// ── GetBase — detecta pasta raiz do pendrive ────────────
+function GetBase() {
+    try {
+        var p = decodeURIComponent(document.location.pathname);
+        p = p.replace(/\//g, '\\');
+        while (p.charAt(0) === '\\') p = p.substring(1);
+        if (p.indexOf(':') < 0) return 'D:\\Pendrive Tecnico MF';
+        var base = p.substring(0, p.lastIndexOf('\\'));
+        if (!fso().FolderExists(base)) return 'D:\\Pendrive Tecnico MF';
+        return base;
+    } catch(e) {
+        return 'D:\\Pendrive Tecnico MF';
+    }
+}
+
+// ── INI read/write ──────────────────────────────────────
+function ReadCfg(k) {
+    try {
+        var cfg = GetBase() + '\\config\\dados.ini';
+        if (!fso().FileExists(cfg)) return '';
+        var f = fso().OpenTextFile(cfg, 1, false, -1);
+        while (!f.AtEndOfStream) {
+            var line = f.ReadLine();
+            var idx = line.indexOf('=');
+            if (idx > 0 && line.substring(0,idx).replace(/^\s+|\s+$/g,'') === k) {
+                var val = line.substring(idx+1).replace(/^\s+|\s+$/g,'');
+                f.Close(); return val;
+            }
+        }
+        f.Close();
+    } catch(e) {}
+    return '';
+}
+
+function WriteCfg(k, v) {
+    try {
+        var base = GetBase();
+        var cfg = base + '\\config\\dados.ini';
+        if (!fso().FolderExists(base+'\\config')) fso().CreateFolder(base+'\\config');
+        var tmp = '', found = false;
+        if (fso().FileExists(cfg)) {
+            var f = fso().OpenTextFile(cfg, 1, false, -1);
+            while (!f.AtEndOfStream) {
+                var line = f.ReadLine();
+                var idx = line.indexOf('=');
+                if (idx > 0 && line.substring(0,idx).replace(/^\s+|\s+$/g,'') === k) {
+                    tmp += k + '=' + v + '\n'; found = true;
+                } else {
+                    tmp += line + '\n';
+                }
+            }
+            f.Close();
+        }
+        if (!found) tmp += k + '=' + v + '\n';
+        var out = fso().OpenTextFile(cfg, 2, true, -1);
+        out.Write(tmp);
+        out.Close();
+    } catch(e) {}
+}
+
+// ── ReadFile ────────────────────────────────────────────
+function ReadFile(fp) {
+    try {
+        if (!fso().FileExists(fp)) return '';
+        var f = fso().OpenTextFile(fp, 1, false, -1);
+        var txt = f.ReadAll();
+        f.Close();
+        return txt;
+    } catch(e) { return ''; }
+}
+
+// ── ListRelatorios ──────────────────────────────────────
+function ListRelatorios() {
+    try {
+        var base = GetBase();
+        var rDir = base + '\\relatorios';
+        if (!fso().FolderExists(rDir)) { fso().CreateFolder(rDir); return ''; }
+        var folder = fso().GetFolder(rDir);
+        var files = new Enumerator(folder.Files);
+        var arr = [];
+        for (; !files.atEnd(); files.moveNext()) {
+            var fi = files.item();
+            var nm = fi.Name.toLowerCase();
+            if (nm.slice(-4)==='.txt' || nm.slice(-5)==='.html') {
+                arr.push(fi.Name + '|' + fi.Path + '|' + fi.DateLastModified);
+            }
+        }
+        arr.sort(function(a,b){ return b.localeCompare(a); });
+        return arr.join('\n');
+    } catch(e) { return ''; }
+}
+
+// ── Executar scripts ────────────────────────────────────
+function RunPS1Admin(script, args) {
+    try {
+        sa().ShellExecute('powershell.exe',
+            '-NoProfile -ExecutionPolicy Bypass -File "' + script + '" ' + (args||''),
+            '', 'runas', 1);
+    } catch(e) { alert('Erro ao executar: ' + e.message); }
+}
+
+function RunBatAdmin(script) {
+    try {
+        sa().ShellExecute('cmd.exe',
+            '/c "' + script + '" & pause',
+            '', 'runas', 1);
+    } catch(e) { alert('Erro ao executar: ' + e.message); }
+}
+
+function RunPS1(script, args) {
+    try {
+        sa().ShellExecute('powershell.exe',
+            '-NoProfile -ExecutionPolicy Bypass -File "' + script + '" ' + (args||''),
+            '', '', 1);
+    } catch(e) { alert('Erro ao executar: ' + e.message); }
+}
+
+function OpenDir(d) {
+    try { sa().ShellExecute('explorer.exe', '"' + d + '"', '', '', 1); } catch(e) {}
+}
+
+function OpenURL(url) {
+    try { sa().ShellExecute(url, '', '', '', 1); } catch(e) {}
+}
+
+// ── Ações específicas ───────────────────────────────────
+function VBS_Diag(cli, ctx, obs, nm) {
+    var b = GetBase();
+    var args = '-ClienteNome "' + cli + '" -Contexto "' + ctx +
+               '" -Observacoes "' + obs + '" -TecnicoNome "' + nm +
+               '" -OutputPath "' + b + '\\relatorios"';
+    RunPS1Admin(b + '\\scripts\\diagnostico.ps1', args);
+}
+
+function VBS_Limpeza() { RunBatAdmin(GetBase() + '\\scripts\\limpeza.bat'); }
+
+function VBS_Rede(op) { RunPS1Admin(GetBase() + '\\scripts\\rede.ps1', '-Acao ' + op); }
+
+function VBS_Drivers(a) { RunPS1Admin(GetBase() + '\\scripts\\drivers.ps1', '-Acao ' + a); }
+
+function VBS_Instalar(pkg, nm) {
+    var b = GetBase();
+    try {
+        sa().ShellExecute('cmd.exe',
+            '/c "' + b + '\\scripts\\instalar.bat" "' + pkg + '" "' + nm + '" & pause',
+            '', 'runas', 1);
+    } catch(e) { alert('Erro: ' + e.message); }
+}
+
+function VBS_WU(a) { RunPS1Admin(GetBase() + '\\scripts\\windows-update.ps1', '-Acao ' + a); }
+
+function VBS_Tool(t) { RunPS1(GetBase() + '\\scripts\\abrir-ferramenta.ps1', '-Ferramenta ' + t); }
+
+function VBS_Admin(t) { RunBatAdmin(GetBase() + '\\scripts\\runas-admin.bat ' + t); }
+
+function VBS_GitHub(a, repo, branch, tok) {
+    var args = '-Acao ' + a + ' -Repo "' + repo + '" -Branch "' + branch + '"';
+    if (tok) args += ' -Token "' + tok + '"';
+    RunPS1Admin(GetBase() + '\\scripts\\atualizar-github.ps1', args);
+}
+
+function VBS_BaixarTools() { RunPS1Admin(GetBase() + '\\scripts\\baixar-ferramentas.ps1', ''); }
+
+function VBS_AbrirRelats() { OpenDir(GetBase() + '\\relatorios'); }
+
+function VBS_Pnputil() {
+    try { sa().ShellExecute('pnputil.exe', '/scan-devices', '', 'runas', 1); } catch(e) {}
+}
+
+function VBS_CleanBrowser() {
+    try {
+        sa().ShellExecute('powershell.exe',
+            '-NoProfile -ExecutionPolicy Bypass -Command "Remove-Item -Recurse -Force -EA SilentlyContinue $env:LOCALAPPDATA\\Google\\Chrome\\\'User Data\'\\Default\\Cache,$env:LOCALAPPDATA\\Microsoft\\Edge\\\'User Data\'\\Default\\Cache; Write-Host \'Cache limpo!\'; Start-Sleep 2"',
+            '', 'runas', 1);
+    } catch(e) {}
+}
+
+function VBS_CleanLogs() {
+    try {
+        sa().ShellExecute('powershell.exe',
+            '-NoProfile -ExecutionPolicy Bypass -Command "Get-EventLog -LogName * | ForEach-Object { Clear-EventLog -LogName $_.Log -EA SilentlyContinue }; Write-Host \'Logs limpos!\'; Start-Sleep 2"',
+            '', 'runas', 1);
+    } catch(e) {}
+}
+
+// ── Detecção de ambiente ────────────────────────────────
 var IS_HTA = false;
 try {
     var href = window.location.href.toLowerCase();
     IS_HTA = (href.indexOf('file://') === 0) || (href.slice(-4) === '.hta');
-    // Testa se o VBScript GetBase funciona (só funciona no HTA)
-    try { var _b = GetBase(); IS_HTA = (_b !== ''); } catch(e) { IS_HTA = false; }
+    if (IS_HTA) { try { var _b = GetBase(); IS_HTA = (_b !== ''); } catch(e) { IS_HTA = false; } }
 } catch(e) { IS_HTA = false; }
 
 // Storage (HTA = arquivo INI; Browser = localStorage)

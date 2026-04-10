@@ -1,0 +1,170 @@
+<html>
+<head>
+<title>TESTE MicroFast</title>
+<HTA:APPLICATION ID="Teste" APPLICATIONNAME="Teste MF"
+  BORDER="normal" CAPTION="yes" SHOWINTASKBAR="yes"
+  SINGLEINSTANCE="yes" SCROLL="yes"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<style>
+html { zoom:1.3; }
+body { background:#111; color:#0f0; font-family:Consolas,monospace; font-size:16px; padding:20px; }
+button { font-size:16px; padding:10px 18px; margin:6px; background:#0097a7; color:#000; border:none; cursor:pointer; font-weight:bold; }
+#log { background:#000; border:2px solid #0f0; padding:15px; margin-top:15px; white-space:pre-wrap; font-size:14px; min-height:300px; }
+h2 { color:#0ff; }
+</style>
+</head>
+<body>
+
+<h2>TESTE DE EXECUCAO - MicroFast Tecnico</h2>
+<p>Clique nos botoes para testar. Resultados aparecem abaixo.</p>
+
+<button onclick="testeGetBase()">1. Testar GetBase()</button>
+<button onclick="testeArquivos()">2. Verificar Arquivos</button>
+<button onclick="testePS1()">3. PowerShell Simples</button>
+<button onclick="testeDiag()">4. Diagnostico</button>
+<button onclick="testeTool()">5. Abrir CPU-Z</button>
+<button onclick="testeRelats()">6. Pasta Relatorios</button>
+
+<div id="log">Aguardando teste...</div>
+
+<script language="JavaScript">
+var _fso = null, _sa = null;
+function fso()  { if(!_fso) _fso = new ActiveXObject('Scripting.FileSystemObject'); return _fso; }
+function sa()   { if(!_sa)  _sa  = new ActiveXObject('Shell.Application'); return _sa; }
+
+function GetBase() {
+    try {
+        var p = decodeURIComponent(document.location.pathname);
+        p = p.replace(/\//g, '\\');
+        while (p.charAt(0) === '\\') p = p.substring(1);
+        if (p.indexOf(':') < 0) return 'D:\\Pendrive Tecnico MF';
+        var base = p.substring(0, p.lastIndexOf('\\'));
+        if (!fso().FolderExists(base)) return 'D:\\Pendrive Tecnico MF';
+        return base;
+    } catch(e) { return 'D:\\Pendrive Tecnico MF'; }
+}
+
+function logMsg(msg) {
+    var el = document.getElementById('log');
+    el.innerText = el.innerText + '\n' + msg;
+    el.scrollTop = el.scrollHeight;
+}
+
+function testeGetBase() {
+    logMsg('--- TESTE GetBase() ---');
+    logMsg('location.pathname = ' + document.location.pathname);
+    logMsg('location.href = ' + document.location.href);
+    try {
+        var b = GetBase();
+        logMsg('GetBase() = ' + b);
+        if (fso().FolderExists(b)) {
+            logMsg('PASTA EXISTE: SIM');
+        } else {
+            logMsg('PASTA EXISTE: NAO  <<<< PROBLEMA!');
+        }
+    } catch(e) {
+        logMsg('ERRO: ' + e.message);
+    }
+    logMsg('');
+}
+
+function testeArquivos() {
+    try {
+        var b = GetBase();
+        logMsg('--- VERIFICAR ARQUIVOS ---');
+        logMsg('Base: ' + b);
+        var arquivos = [
+            '\\scripts\\diagnostico.ps1',
+            '\\scripts\\limpeza.bat',
+            '\\scripts\\rede.ps1',
+            '\\scripts\\abrir-ferramenta.ps1',
+            '\\tools\\CPU-Z\\cpuz_x64.exe',
+            '\\tools\\HWiNFO64\\HWiNFO64.exe',
+            '\\config\\versao.txt'
+        ];
+        for (var i=0; i<arquivos.length; i++) {
+            var a = b + arquivos[i];
+            if (fso().FileExists(a)) {
+                logMsg('[OK]   ' + arquivos[i]);
+            } else {
+                logMsg('[FALTA] ' + arquivos[i] + '  <<<< NAO ENCONTRADO');
+            }
+        }
+        if (fso().FolderExists(b+'\\relatorios')) {
+            logMsg('[OK]   \\relatorios\\ existe');
+        } else {
+            logMsg('[FALTA] \\relatorios\\');
+        }
+    } catch(e) {
+        logMsg('ERRO: ' + e.message);
+    }
+    logMsg('');
+}
+
+function testePS1() {
+    logMsg('--- TESTE POWERSHELL ---');
+    try {
+        sa().ShellExecute('powershell.exe',
+            '-NoProfile -Command "Write-Host \'MICROFAST TESTE OK!\' -ForegroundColor Green; Write-Host \'PowerShell funciona!\'; Start-Sleep 5"',
+            '', 'runas', 1);
+        logMsg('ShellExecute OK. Aceite o UAC!');
+    } catch(e) {
+        logMsg('ERRO: ' + e.message);
+    }
+    logMsg('');
+}
+
+function testeDiag() {
+    logMsg('--- TESTE DIAGNOSTICO ---');
+    try {
+        var b = GetBase();
+        var script = b + '\\scripts\\diagnostico.ps1';
+        logMsg('Script: ' + script);
+        if (!fso().FileExists(script)) {
+            logMsg('ERRO: arquivo NAO existe!');
+            return;
+        }
+        logMsg('Arquivo existe. Executando...');
+        sa().ShellExecute('powershell.exe',
+            '-NoProfile -ExecutionPolicy Bypass -File "' + script + '" -ClienteNome "Teste" -Contexto "MicroFast" -OutputPath "' + b + '\\relatorios"',
+            '', 'runas', 1);
+        logMsg('Executado! Aceite o UAC.');
+    } catch(e) {
+        logMsg('ERRO: ' + e.message);
+    }
+    logMsg('');
+}
+
+function testeTool() {
+    logMsg('--- TESTE CPU-Z ---');
+    try {
+        var b = GetBase();
+        var exe = b + '\\tools\\CPU-Z\\cpuz_x64.exe';
+        logMsg('Path: ' + exe);
+        if (!fso().FileExists(exe)) {
+            logMsg('ERRO: arquivo NAO existe!');
+            return;
+        }
+        logMsg('Abrindo...');
+        sa().ShellExecute(exe, '', '', '', 1);
+        logMsg('CPU-Z deve abrir agora!');
+    } catch(e) {
+        logMsg('ERRO: ' + e.message);
+    }
+    logMsg('');
+}
+
+function testeRelats() {
+    logMsg('--- ABRIR RELATORIOS ---');
+    try {
+        var b = GetBase();
+        sa().ShellExecute('explorer.exe', '"' + b + '\\relatorios"', '', '', 1);
+        logMsg('Explorer aberto.');
+    } catch(e) {
+        logMsg('ERRO: ' + e.message);
+    }
+    logMsg('');
+}
+</script>
+</body>
+</html>
