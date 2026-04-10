@@ -316,14 +316,80 @@ function Baixar-Seguranca {
     }
 }
 
-# === FERRAMENTAS DE REDE ===
+# === REDE E ACESSO REMOTO ===
 function Baixar-Rede {
-    WH "FERRAMENTAS DE REDE (Portaveis)"
+    WH "REDE E ACESSO REMOTO"
 
-    # PuTTY ja e baixado em Utilitarios, so verifica
     if (Test-Path "$ToolsDir\PuTTY\putty.exe") {
         WARN "PuTTY ja existe - pulando"
         $script:totalOk++
+    }
+
+    # RustDesk (portable EXE)
+    if (Download-File "RustDesk" `
+        "https://github.com/rustdesk/rustdesk/releases/download/1.3.7/rustdesk-1.3.7-x86_64.exe" `
+        "$ToolsDir\RustDesk\rustdesk.exe") { $script:totalOk++ }
+    else {
+        INF "RustDesk - instalando via winget..."
+        $wg = Get-Command winget -ErrorAction SilentlyContinue
+        if ($wg) {
+            & winget install --id "RustDesk.RustDesk" --silent --accept-source-agreements --accept-package-agreements 2>&1 | Out-Null
+            if ($LASTEXITCODE -eq 0) { OK "RustDesk instalado via winget"; $script:totalOk++ }
+            else { WARN "RustDesk - baixe de https://rustdesk.com"; $script:totalFail++ }
+        } else { $script:totalFail++ }
+    }
+
+    # AnyDesk (portable EXE)
+    if (Download-File "AnyDesk" `
+        "https://download.anydesk.com/AnyDesk.exe" `
+        "$ToolsDir\AnyDesk\AnyDesk.exe") { $script:totalOk++ }
+    else { $script:totalFail++ }
+
+    # Advanced IP Scanner
+    INF "Advanced IP Scanner - instalando via winget..."
+    $wg = Get-Command winget -ErrorAction SilentlyContinue
+    if ($wg) {
+        & winget install --id "Famatech.AdvancedIPScanner" --silent --accept-source-agreements --accept-package-agreements 2>&1 | Out-Null
+        if ($LASTEXITCODE -eq 0) { OK "Advanced IP Scanner instalado"; $script:totalOk++ }
+        else { WARN "Advanced IP Scanner - pode ja estar instalado"; $script:totalOk++ }
+    }
+
+    # Wireshark (requer instalacao)
+    INF "Wireshark requer instalacao"
+    if ($wg) {
+        & winget install --id "WiresharkFoundation.Wireshark" --silent --accept-source-agreements --accept-package-agreements 2>&1 | Out-Null
+        if ($LASTEXITCODE -eq 0) { OK "Wireshark instalado via winget"; $script:totalOk++ }
+        else { WARN "Wireshark - pode ja estar instalado"; $script:totalOk++ }
+    }
+}
+
+# === STRESS TEST ===
+function Baixar-StressTest {
+    WH "STRESS TEST"
+
+    # Prime95 (portable ZIP)
+    $p95Dest = "$ToolsDir\Prime95"
+    if (!(Test-Path $p95Dest)) { New-Item -ItemType Directory -Path $p95Dest -Force | Out-Null }
+    if (Test-Path "$p95Dest\prime95.exe") {
+        WARN "Prime95 ja existe - pulando"
+        $script:totalOk++
+    } else {
+        if (Download-AndExtract "Prime95" `
+            "https://www.mersenne.org/download/software/v30/30.19/p95v3019b13.win64.zip" `
+            $p95Dest "prime95.exe") { $script:totalOk++ }
+        else {
+            WARN "Prime95 - baixe de https://www.mersenne.org/download/"
+            $script:totalFail++
+        }
+    }
+
+    # FurMark (via winget)
+    INF "FurMark - instalando via winget..."
+    $wg = Get-Command winget -ErrorAction SilentlyContinue
+    if ($wg) {
+        & winget install --id "Geeks3D.FurMark" --silent --accept-source-agreements --accept-package-agreements 2>&1 | Out-Null
+        if ($LASTEXITCODE -eq 0) { OK "FurMark instalado via winget"; $script:totalOk++ }
+        else { WARN "FurMark - pode ja estar instalado"; $script:totalOk++ }
     }
 }
 
@@ -337,6 +403,7 @@ switch ($op) {
         Baixar-Utilitarios
         Baixar-Seguranca
         Baixar-Rede
+        Baixar-StressTest
     }
 }
 

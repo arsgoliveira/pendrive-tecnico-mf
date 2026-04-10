@@ -519,9 +519,10 @@ body { background:#0d1117; color:#e0f0ff; font-family:'Exo 2',Segoe UI,Arial,san
 <!-- FERRAMENTAS -->
 <div class="pg" id="pg-tools">
   <div class="ptit">🛠️ Ferramentas <span>Portables</span></div>
-  <div class="pdesc">Abre da pasta tools\ — se ausente, baixa via winget</div>
+  <div class="pdesc">Abre da pasta tools\ — se ausente, baixa via winget ou abre o site</div>
   <button class="btn bp" onclick="execBaixarTools()" style="margin-bottom:.75rem">⬇️ BAIXAR TODAS (1ª vez — requer internet)</button>
-  <div class="stit">Diagnóstico de Hardware</div>
+
+  <div class="stit">💻 Diagnóstico de Hardware</div>
   <div class="row row-wrap">
     <div class="col3"><button class="tb" onclick="execTool('crystaldiskinfo')"><span class="tik" style="background:rgba(0,229,255,.08)">💾</span><span class="tinfo"><span class="tn">CrystalDiskInfo</span><br><span class="td">Saúde HDD/SSD via SMART</span><br><span class="tbg bc">tools\</span></span></button></div>
     <div class="col3"><button class="tb" onclick="execTool('crystaldiskmark')"><span class="tik" style="background:rgba(0,229,255,.08)">⚡</span><span class="tinfo"><span class="tn">CrystalDiskMark</span><br><span class="td">Benchmark velocidade disco</span><br><span class="tbg bc">tools\</span></span></button></div>
@@ -530,15 +531,38 @@ body { background:#0d1117; color:#e0f0ff; font-family:'Exo 2',Segoe UI,Arial,san
     <div class="col3"><button class="tb" onclick="execTool('gpuz')"><span class="tik" style="background:rgba(255,171,0,.08)">🎮</span><span class="tinfo"><span class="tn">GPU-Z</span><br><span class="td">Info completa de placa de vídeo</span><br><span class="tbg ba">tools\</span></span></button></div>
     <div class="col3"><button class="tb" onclick="execTool('speccy')"><span class="tik" style="background:rgba(156,39,176,.1)">📊</span><span class="tinfo"><span class="tn">Speccy</span><br><span class="td">Resumo visual do hardware</span><br><span class="tbg bpu">tools\</span></span></button></div>
   </div>
-  <div class="stit">Utilitários &amp; Segurança</div>
+
+  <div class="stit">📡 Rede &amp; Acesso Remoto</div>
+  <div class="row row-wrap">
+    <div class="col3"><button class="tb" onclick="execTool('rustdesk')"><span class="tik" style="background:rgba(0,229,255,.08)">🖥️</span><span class="tinfo"><span class="tn">RustDesk</span><br><span class="td">Acesso remoto open source</span><br><span class="tbg bc">tools\</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execTool('anydesk')"><span class="tik" style="background:rgba(0,255,136,.08)">🔗</span><span class="tinfo"><span class="tn">AnyDesk</span><br><span class="td">Acesso remoto rápido</span><br><span class="tbg bg">tools\</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execTool('putty')"><span class="tik" style="background:rgba(0,229,255,.08)">🔒</span><span class="tinfo"><span class="tn">PuTTY</span><br><span class="td">SSH / Telnet / Serial</span><br><span class="tbg bc">tools\</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execTool('ipscanner')"><span class="tik" style="background:rgba(0,255,136,.08)">🔍</span><span class="tinfo"><span class="tn">Advanced IP Scanner</span><br><span class="td">Descobre dispositivos na rede</span><br><span class="tbg bg">winget</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execTool('wireshark')"><span class="tik" style="background:rgba(0,188,212,.08)">🦈</span><span class="tinfo"><span class="tn">Wireshark</span><br><span class="td">Captura e análise de pacotes</span><br><span class="tbg bc">winget</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execTool('tcpview')"><span class="tik" style="background:rgba(0,229,255,.08)">👁️</span><span class="tinfo"><span class="tn">TCPView</span><br><span class="td">Monitor conexões TCP/UDP</span><br><span class="tbg bc">tools\</span></span></button></div>
+  </div>
+
+  <div class="stit">🛡️ Segurança</div>
+  <div class="row row-wrap">
+    <div class="col3"><button class="tb" onclick="execTool('malwarebytes')"><span class="tik" style="background:rgba(255,23,68,.08)">🦠</span><span class="tinfo"><span class="tn">Malwarebytes</span><br><span class="td">Scanner de malware completo</span><br><span class="tbg br">winget</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execTool('adwcleaner')"><span class="tik" style="background:rgba(255,23,68,.08)">🧽</span><span class="tinfo"><span class="tn">AdwCleaner</span><br><span class="td">Remove adware e PUPs</span><br><span class="tbg br">tools\</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execTool('rkill')"><span class="tik" style="background:rgba(255,171,0,.08)">💀</span><span class="tinfo"><span class="tn">RKill</span><br><span class="td">Mata processos de malware</span><br><span class="tbg ba">tools\</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execTool('autoruns')"><span class="tik" style="background:rgba(0,229,255,.08)">🚀</span><span class="tinfo"><span class="tn">Autoruns</span><br><span class="td">Gerencia inicialização</span><br><span class="tbg bc">tools\</span></span></button></div>
+  </div>
+
+  <div class="stit">🔧 Utilitários</div>
   <div class="row row-wrap">
     <div class="col3"><button class="tb" onclick="execTool('rufus')"><span class="tik" style="background:rgba(0,229,255,.08)">🔥</span><span class="tinfo"><span class="tn">Rufus</span><br><span class="td">Cria pendrives bootáveis</span><br><span class="tbg bc">tools\</span></span></button></div>
-    <div class="col3"><button class="tb" onclick="execTool('autoruns')"><span class="tik" style="background:rgba(0,229,255,.08)">🚀</span><span class="tinfo"><span class="tn">Autoruns</span><br><span class="td">Gerencia inicialização</span><br><span class="tbg bc">tools\</span></span></button></div>
     <div class="col3"><button class="tb" onclick="execTool('procexp')"><span class="tik" style="background:rgba(0,255,136,.08)">📊</span><span class="tinfo"><span class="tn">Process Explorer</span><br><span class="td">Task Manager avançado</span><br><span class="tbg bg">tools\</span></span></button></div>
-    <div class="col3"><button class="tb" onclick="execTool('malwarebytes')"><span class="tik" style="background:rgba(255,23,68,.08)">🦠</span><span class="tinfo"><span class="tn">Malwarebytes</span><br><span class="td">Scanner de malware</span><br><span class="tbg br">winget</span></span></button></div>
-    <div class="col3"><button class="tb" onclick="execTool('adwcleaner')"><span class="tik" style="background:rgba(255,23,68,.08)">🧽</span><span class="tinfo"><span class="tn">AdwCleaner</span><br><span class="td">Remove adware e PUPs</span><br><span class="tbg br">tools\</span></span></button></div>
-    <div class="col3"><button class="tb" onclick="execTool('putty')"><span class="tik" style="background:rgba(0,229,255,.08)">🖥️</span><span class="tinfo"><span class="tn">PuTTY</span><br><span class="td">SSH / Telnet / Serial</span><br><span class="tbg bc">tools\</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execTool('treesize')"><span class="tik" style="background:rgba(0,188,212,.08)">📁</span><span class="tinfo"><span class="tn">TreeSize Free</span><br><span class="td">Mostra uso de disco por pasta</span><br><span class="tbg bc">winget</span></span></button></div>
   </div>
+
+  <div class="stit">🔥 Stress Test</div>
+  <div class="row row-wrap">
+    <div class="col3"><button class="tb" onclick="execTool('prime95')"><span class="tik" style="background:rgba(255,171,0,.08)">🔥</span><span class="tinfo"><span class="tn">Prime95</span><br><span class="td">Stress test CPU (estabilidade)</span><br><span class="tbg ba">tools\</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execTool('furmark')"><span class="tik" style="background:rgba(255,23,68,.08)">🎮</span><span class="tinfo"><span class="tn">FurMark</span><br><span class="td">Stress test GPU (temperatura)</span><br><span class="tbg br">winget</span></span></button></div>
+  </div>
+
   <div class="term" id="toolT" style="margin-top:.875rem"><div class="tl"><span class="tdm">Selecione uma ferramenta...</span></div></div>
 </div>
 
