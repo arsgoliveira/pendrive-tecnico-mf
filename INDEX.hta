@@ -656,15 +656,37 @@ body { background:#0d1117; color:#e0f0ff; font-family:'Exo 2',Segoe UI,Arial,san
 <script language="VBScript">
 Option Explicit
 
+Function URLDecode(s)
+    Dim i, c, h
+    URLDecode = ""
+    i = 1
+    Do While i <= Len(s)
+        c = Mid(s, i, 1)
+        If c = "%" And i + 2 <= Len(s) Then
+            h = Mid(s, i + 1, 2)
+            URLDecode = URLDecode & Chr(CInt("&H" & h))
+            i = i + 3
+        Else
+            URLDecode = URLDecode & c
+            i = i + 1
+        End If
+    Loop
+End Function
+
 Function GetBase()
-    Dim p
+    Dim p, fso
+    Set fso = CreateObject("Scripting.FileSystemObject")
     p = document.location.pathname
+    p = URLDecode(p)
     p = Replace(p, "/", "\")
     Do While Left(p,1) = "\" : p = Mid(p,2) : Loop
     If InStr(p, ":") = 0 Then
         GetBase = "D:\Pendrive Tecnico MF"
     Else
         GetBase = Left(p, InStrRev(p,"\") - 1)
+    End If
+    If Not fso.FolderExists(GetBase) Then
+        GetBase = "D:\Pendrive Tecnico MF"
     End If
 End Function
 
@@ -750,16 +772,23 @@ Function ListRelatorios()
 End Function
 
 Sub RunPS1Admin(s, args)
-    Dim sh, cmd
-    Set sh = CreateObject("WScript.Shell")
-    cmd = "powershell.exe -NoProfile -ExecutionPolicy Bypass -Command ""Start-Process powershell -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File `""" & s & "`"" " & args & "' -Verb RunAs"""
-    sh.Run cmd, 0, False
+    Dim sh, fso, tmp, bat
+    Set sh  = CreateObject("WScript.Shell")
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    tmp = sh.ExpandEnvironmentStrings("%TEMP%")
+    bat = tmp & "\mf_run.bat"
+    Dim f : Set f = fso.CreateTextFile(bat, True)
+    f.WriteLine "@echo off"
+    f.WriteLine "powershell.exe -NoProfile -ExecutionPolicy Bypass -File """ & s & """ " & args
+    f.WriteLine "pause"
+    f.Close
+    sh.Run "powershell.exe -NoProfile -Command ""Start-Process cmd.exe -ArgumentList '/c """"" & bat & """""' -Verb RunAs""", 0, False
 End Sub
 
 Sub RunBatAdmin(s)
     Dim sh
     Set sh = CreateObject("WScript.Shell")
-    sh.Run "powershell.exe -Command ""Start-Process cmd.exe -ArgumentList '/c """ & s & """' -Verb RunAs""", 0, False
+    sh.Run "powershell.exe -NoProfile -Command ""Start-Process cmd.exe -ArgumentList '/c """"" & s & """""' -Verb RunAs""", 0, False
 End Sub
 
 Sub RunPS1(s, args)
@@ -791,9 +820,8 @@ Sub VBS_Limpeza()
 End Sub
 
 Sub VBS_Rede(op)
-    Dim sh, s : s = GetBase() & "\scripts\rede.ps1"
-    Set sh = CreateObject("WScript.Shell")
-    sh.Run "powershell.exe -NoProfile -ExecutionPolicy Bypass -Command ""Start-Process powershell -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File `""" & s & "`"" -Acao " & op & "' -Verb RunAs""", 0, False
+    Dim b : b = GetBase()
+    RunPS1Admin b & "\scripts\rede.ps1", "-Acao " & op
 End Sub
 
 Sub VBS_Drivers(a)
@@ -833,17 +861,17 @@ End Sub
 
 Sub VBS_Pnputil()
     Dim sh : Set sh = CreateObject("WScript.Shell")
-    sh.Run "powershell.exe -Command ""Start-Process pnputil.exe -ArgumentList '/scan-devices' -Verb RunAs""", 0, False
+    sh.Run "powershell.exe -NoProfile -Command ""Start-Process pnputil.exe -ArgumentList '/scan-devices' -Verb RunAs""", 0, False
 End Sub
 
 Sub VBS_CleanBrowser()
     Dim sh : Set sh = CreateObject("WScript.Shell")
-    sh.Run "powershell.exe -Command ""Start-Process powershell -ArgumentList '-Command Remove-Item -Recurse -Force -EA SilentlyContinue $env:LOCALAPPDATA\Google\Chrome\User` Data\Default\Cache,$env:LOCALAPPDATA\Microsoft\Edge\User` Data\Default\Cache' -Verb RunAs""", 0, False
+    sh.Run "powershell.exe -NoProfile -Command ""Start-Process powershell -ArgumentList '-NoProfile -Command Remove-Item -Recurse -Force -EA SilentlyContinue $env:LOCALAPPDATA\Google\Chrome\User` Data\Default\Cache,$env:LOCALAPPDATA\Microsoft\Edge\User` Data\Default\Cache' -Verb RunAs""", 0, False
 End Sub
 
 Sub VBS_CleanLogs()
     Dim sh : Set sh = CreateObject("WScript.Shell")
-    sh.Run "powershell.exe -Command ""Start-Process powershell -ArgumentList '-Command Get-EventLog -LogName * | %{ Clear-EventLog -LogName $_.Log -EA SilentlyContinue }' -Verb RunAs""", 0, False
+    sh.Run "powershell.exe -NoProfile -Command ""Start-Process powershell -ArgumentList '-NoProfile -Command Get-EventLog -LogName * | ForEach-Object { Clear-EventLog -LogName $_.Log -EA SilentlyContinue }' -Verb RunAs""", 0, False
 End Sub
 </script>
 
