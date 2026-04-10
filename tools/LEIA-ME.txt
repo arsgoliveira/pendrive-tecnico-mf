@@ -1,0 +1,28 @@
+PASTA TOOLS - FERRAMENTAS PORTAVEIS
+=====================================
+
+Todas rodam DIRETO DO PENDRIVE sem instalacao.
+O painel detecta automaticamente e abre do pendrive.
+
+Para baixar tudo automaticamente:
+  Painel > Dashboard > "Baixar Ferramentas"
+  Ou execute: scripts\baixar-ferramentas.ps1
+
+Estrutura esperada:
+  tools\
+    CrystalDiskInfo\DiskInfo64.exe    <- Saude SMART HDD/SSD
+    CrystalDiskMark\DiskMark64.exe    <- Benchmark disco
+    HWiNFO64\HWiNFO64.exe            <- Monitor hardware completo
+    CPU-Z\cpuz_x64.exe               <- Info CPU/RAM/Placa-mae
+    GPU-Z\GPU-Z.exe                  <- Info placa de video
+    Speccy\Speccy64.exe              <- Resumo visual hardware
+    Rufus\rufus.exe                  <- Criar pendrives bootaveis
+    Autoruns\Autoruns64.exe          <- Gerenciar inicializacao
+    ProcessExplorer\procexp64.exe    <- Task Manager avancado
+    TCPView\Tcpview64.exe            <- Monitor conexoes TCP/UDP
+    AdwCleaner\AdwCleaner.exe        <- Remover adware/PUPs
+    RKill\rkill.exe                  <- Matar processos malware
+    PuTTY\putty.exe                  <- SSH/Telnet/Serial
+
+Se a ferramenta nao estiver aqui, o painel tenta
+instalar via winget ou abre a pagina de download.

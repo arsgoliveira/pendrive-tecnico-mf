@@ -1,0 +1,25 @@
+# Ferramentas portaveis (binarios pesados - baixe com baixar-ferramentas.ps1)
+tools/**/*.exe
+tools/**/*.dll
+tools/**/*.sys
+tools/**/*.dat
+tools/**/*.chm
+tools/**/*.cfg
+tools/**/*.xml
+tools/**/*.msi
+
+# Manter estrutura de pastas e docs
+!tools/LEIA-ME.txt
+
+# Relatorios gerados (dados sensiveis de clientes)
+relatorios/*.txt
+relatorios/*.html
+
+# Config local (senhas hash)
+config/dados.ini
+
+# Temporarios
+*.tmp
+*.log
+Thumbs.db
+desktop.ini
