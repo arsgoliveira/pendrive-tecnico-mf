@@ -491,12 +491,18 @@ body { background:#0d1117; color:#e0f0ff; font-family:'Exo 2',Segoe UI,Arial,san
     </div>
     <div class="col2">
       <div class="card">
-        <div class="ct">Pacotes Rápidos</div>
+        <div class="ct">Pacotes Rápidos — Navegadores</div>
         <button class="tb" onclick="instR('Google.Chrome','Google Chrome')"><span style="font-size:14px;margin-right:10px">🌐</span><span class="tn">Google Chrome</span></button>
         <button class="tb" onclick="instR('Mozilla.Firefox','Firefox')"><span style="font-size:14px;margin-right:10px">🦊</span><span class="tn">Mozilla Firefox</span></button>
+        <button class="tb" onclick="instR('Opera.Opera','Opera Browser')"><span style="font-size:14px;margin-right:10px">🔴</span><span class="tn">Opera Browser</span></button>
+        <button class="tb" onclick="instR('Brave.Brave','Brave Browser')"><span style="font-size:14px;margin-right:10px">🦁</span><span class="tn">Brave Browser</span></button>
+        <div class="ct" style="margin-top:8px">Essenciais</div>
         <button class="tb" onclick="instR('VideoLAN.VLC','VLC')"><span style="font-size:14px;margin-right:10px">📹</span><span class="tn">VLC Media Player</span></button>
         <button class="tb" onclick="instR('7zip.7zip','7-Zip')"><span style="font-size:14px;margin-right:10px">📦</span><span class="tn">7-Zip</span></button>
         <button class="tb" onclick="instR('Adobe.Acrobat.Reader.64-bit','Adobe Reader')"><span style="font-size:14px;margin-right:10px">📄</span><span class="tn">Adobe Reader</span></button>
+        <button class="tb" onclick="instR('Notepad++.Notepad++','Notepad++')"><span style="font-size:14px;margin-right:10px">📝</span><span class="tn">Notepad++</span></button>
+        <button class="tb" onclick="instR('Microsoft.Office','Microsoft Office')"><span style="font-size:14px;margin-right:10px">📊</span><span class="tn">Microsoft Office</span></button>
+        <button class="tb" onclick="instR('WhatsApp.WhatsApp','WhatsApp Desktop')"><span style="font-size:14px;margin-right:10px">💬</span><span class="tn">WhatsApp Desktop</span></button>
       </div>
     </div>
   </div>
@@ -778,38 +784,28 @@ function ListRelatorios() {
     } catch(e) { return ''; }
 }
 
-// ── Executar scripts via .bat temporário (robusto com espaços) ──
-function _writeBat(content) {
-    var sh = new ActiveXObject('WScript.Shell');
-    var tmp = sh.ExpandEnvironmentStrings('%TEMP%') + '\\mf_exec.bat';
-    var f = fso().CreateTextFile(tmp, true);
-    f.WriteLine('@echo off');
-    f.WriteLine('chcp 65001 >nul 2>&1');
-    f.WriteLine(content);
-    f.WriteLine('echo.');
-    f.WriteLine('pause');
-    f.Close();
-    return tmp;
-}
-
+// ── Executar scripts (cmd /k mantém janela aberta) ──────
 function RunPS1Admin(script, args) {
     try {
-        var bat = _writeBat('powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' + script + '" ' + (args||''));
-        sa().ShellExecute(bat, '', '', 'runas', 1);
+        sa().ShellExecute('cmd.exe',
+            '/k powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' + script + '" ' + (args||''),
+            '', 'runas', 1);
     } catch(e) { alert('Erro ao executar: ' + e.message); }
 }
 
 function RunBatAdmin(script) {
     try {
-        var bat = _writeBat('"' + script + '"');
-        sa().ShellExecute(bat, '', '', 'runas', 1);
+        sa().ShellExecute('cmd.exe',
+            '/k "' + script + '"',
+            '', 'runas', 1);
     } catch(e) { alert('Erro ao executar: ' + e.message); }
 }
 
 function RunPS1(script, args) {
     try {
-        var bat = _writeBat('powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' + script + '" ' + (args||''));
-        sa().ShellExecute(bat, '', '', '', 1);
+        sa().ShellExecute('cmd.exe',
+            '/k powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' + script + '" ' + (args||''),
+            '', '', 1);
     } catch(e) { alert('Erro ao executar: ' + e.message); }
 }
 
