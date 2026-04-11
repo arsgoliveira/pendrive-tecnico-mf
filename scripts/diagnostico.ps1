@@ -212,7 +212,7 @@ try {
     WOK "Pendentes" "$nUpd atualizacao(oes)"
 } catch {
     $L.Add("Pendentes     : verificacao manual necessaria")
-    WWARN "Verificacao via COM falhou — abra o Windows Update manualmente"
+    WWARN "Verificacao via COM falhou - abra o Windows Update manualmente"
 }
 
 # ── AVALIACAO DE UPGRADE ─────────────────────────────────
