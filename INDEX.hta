@@ -778,28 +778,38 @@ function ListRelatorios() {
     } catch(e) { return ''; }
 }
 
-// ── Executar scripts ────────────────────────────────────
+// ── Executar scripts via .bat temporário (robusto com espaços) ──
+function _writeBat(content) {
+    var sh = new ActiveXObject('WScript.Shell');
+    var tmp = sh.ExpandEnvironmentStrings('%TEMP%') + '\\mf_exec.bat';
+    var f = fso().CreateTextFile(tmp, true);
+    f.WriteLine('@echo off');
+    f.WriteLine('chcp 65001 >nul 2>&1');
+    f.WriteLine(content);
+    f.WriteLine('echo.');
+    f.WriteLine('pause');
+    f.Close();
+    return tmp;
+}
+
 function RunPS1Admin(script, args) {
     try {
-        sa().ShellExecute('powershell.exe',
-            '-NoProfile -ExecutionPolicy Bypass -File "' + script + '" ' + (args||''),
-            '', 'runas', 1);
+        var bat = _writeBat('powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' + script + '" ' + (args||''));
+        sa().ShellExecute(bat, '', '', 'runas', 1);
     } catch(e) { alert('Erro ao executar: ' + e.message); }
 }
 
 function RunBatAdmin(script) {
     try {
-        sa().ShellExecute('cmd.exe',
-            '/c "' + script + '" & pause',
-            '', 'runas', 1);
+        var bat = _writeBat('"' + script + '"');
+        sa().ShellExecute(bat, '', '', 'runas', 1);
     } catch(e) { alert('Erro ao executar: ' + e.message); }
 }
 
 function RunPS1(script, args) {
     try {
-        sa().ShellExecute('powershell.exe',
-            '-NoProfile -ExecutionPolicy Bypass -File "' + script + '" ' + (args||''),
-            '', '', 1);
+        var bat = _writeBat('powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' + script + '" ' + (args||''));
+        sa().ShellExecute(bat, '', '', '', 1);
     } catch(e) { alert('Erro ao executar: ' + e.message); }
 }
 
