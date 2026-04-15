@@ -1,0 +1,1499 @@
+<html>
+<head>
+<title>MicroFast Técnico v3</title>
+<HTA:APPLICATION ID="MFTecnico"
+  APPLICATIONNAME="MicroFast Técnico v3"
+  BORDER="normal" BORDERSTYLE="complex"
+  CAPTION="yes" SHOWINTASKBAR="yes"
+  SINGLEINSTANCE="yes" WINDOWSTATE="maximize"
+  SCROLL="no" ICON="config\logo.ico"/>
+<meta http-equiv="X-UA-Compatible" content="IE=10">
+<meta charset="UTF-8">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&family=Exo+2:wght@300;400;600;700&display=swap');
+
+/* RESET */
+* { margin:0; padding:0; -ms-box-sizing:border-box; box-sizing:border-box; }
+html { zoom:1.3; }
+html, body { width:100%; height:100%; }
+body { background:#0d1117; color:#e0f0ff; font-family:'Exo 2',Segoe UI,Arial,sans-serif; font-size:15px; overflow:hidden; }
+
+/* AUTH OVERLAY — cobre TUDO */
+#authOv {
+  position:fixed;
+  top:0; left:0; right:0; bottom:0;
+  width:100%; height:100%;
+  background:#000000;
+  z-index:9000;
+  display:-ms-flexbox; display:flex;
+  -ms-flex-align:center; align-items:center;
+  -ms-flex-pack:center; justify-content:center;
+}
+.abox {
+  background:#111820;
+  border:1px solid #2a4a6e;
+  border-radius:14px;
+  padding:2.5rem;
+  width:480px;
+  max-width:95%;
+}
+.alogo { text-align:center; margin-bottom:1.5rem; }
+.aic {
+  width:64px; height:64px;
+  background:#0097a7;
+  border-radius:10px;
+  display:inline-block;
+  line-height:64px;
+  text-align:center;
+  font-family:'Rajdhani',Arial,sans-serif;
+  font-weight:700; font-size:28px; color:#000;
+  margin-bottom:10px;
+}
+.atit { font-family:'Rajdhani',Arial,sans-serif; font-size:26px; font-weight:700; color:#e0f0ff; }
+.asub { font-size:15px; color:#4a7a9b; margin-top:3px; }
+.atabs { display:-ms-flexbox; display:flex; margin-bottom:1.25rem; border:1px solid #2a4a6e; border-radius:5px; overflow:hidden; }
+.atab { -ms-flex:1; flex:1; padding:10px; text-align:center; font-size:15px; color:#4a7a9b; cursor:pointer; background:none; border:none; font-family:'Exo 2',Arial,sans-serif; }
+.atab.on { background:#0097a7; color:#fff; font-weight:700; }
+.afield { margin-bottom:1rem; }
+.afield label { display:block; font-size:13px; color:#4a7a9b; letter-spacing:1px; text-transform:uppercase; margin-bottom:6px; }
+.afield input {
+  width:100%; background:#1a2332; border:1px solid #2a4a6e;
+  border-radius:5px; padding:11px 14px; color:#e0f0ff;
+  font-family:'Share Tech Mono',Consolas,monospace; font-size:16px; outline:none;
+}
+.abtn {
+  width:100%; padding:14px;
+  background:#0097a7; color:#000;
+  font-family:'Rajdhani',Arial,sans-serif;
+  font-size:18px; font-weight:700; letter-spacing:2px;
+  border:none; border-radius:5px; cursor:pointer;
+  margin-top:5px;
+}
+.amsg { font-size:15px; color:#ff1744; text-align:center; margin-top:7px; min-height:20px; }
+.anote { font-size:14px; color:#4a7a9b; text-align:center; margin-top:8px; }
+
+/* HEADER */
+#hdr {
+  background:#111820;
+  border-bottom:1px solid #2a4a6e;
+  padding:0 1.5rem;
+  height:64px;
+  display:-ms-flexbox; display:flex;
+  -ms-flex-align:center; align-items:center;
+  -ms-flex-pack:justify; justify-content:space-between;
+  position:relative; z-index:100;
+}
+.hlogo { display:-ms-flexbox; display:flex; -ms-flex-align:center; align-items:center; }
+.hic {
+  width:40px; height:40px; background:#0097a7;
+  border-radius:7px; display:inline-block;
+  line-height:40px; text-align:center;
+  font-family:'Rajdhani',Arial,sans-serif;
+  font-weight:700; font-size:18px; color:#000;
+  margin-right:12px;
+}
+.htxt { font-family:'Rajdhani',Arial,sans-serif; font-size:22px; font-weight:700; }
+.htxt span { color:#00e5ff; }
+.hsub { font-size:12px; color:#4a7a9b; letter-spacing:2px; text-transform:uppercase; }
+.hright { display:-ms-flexbox; display:flex; -ms-flex-align:center; align-items:center; }
+.hclk { font-family:'Share Tech Mono',Consolas,monospace; font-size:16px; color:#00e5ff; margin-right:1rem; }
+.hmode { font-size:13px; padding:4px 12px; border-radius:10px; font-weight:700; margin-right:.875rem; }
+.hmode.online  { background:rgba(0,200,83,.15); color:#00c853; border:1px solid rgba(0,200,83,.3); }
+.hmode.offline { background:rgba(255,171,0,.15); color:#ffab00; border:1px solid rgba(255,171,0,.3); }
+.hbadge { background:#1a2332; border:1px solid #2a4a6e; border-radius:20px; padding:4px 14px; font-size:14px; color:#8ab4d4; margin-right:.875rem; }
+.hbtn { background:transparent; border:1px solid #2a4a6e; border-radius:20px; padding:6px 16px; font-size:14px; color:#4a7a9b; cursor:pointer; font-family:'Exo 2',Arial,sans-serif; }
+
+/* LAYOUT */
+#lay { display:-ms-flexbox; display:flex; height:calc(100vh - 64px); overflow:hidden; }
+
+/* SIDEBAR */
+#sb { width:240px; min-width:240px; background:#111820; border-right:1px solid #1e3048; overflow-y:auto; padding:.75rem 0; }
+.ns { padding:.5rem 1.1rem .2rem; font-size:12px; letter-spacing:2px; color:#4a7a9b; text-transform:uppercase; }
+.ni { display:-ms-flexbox; display:flex; -ms-flex-align:center; align-items:center; padding:10px 1.2rem; cursor:pointer; color:#8ab4d4; font-size:15px; border-left:3px solid transparent; }
+.ni:hover { background:rgba(0,229,255,.04); color:#e0f0ff; }
+.ni.on { background:rgba(0,229,255,.08); color:#00e5ff; border-left-color:#00e5ff; font-weight:700; }
+.nic { font-size:17px; width:20px; text-align:center; margin-right:10px; display:inline-block; }
+.nbg { margin-left:auto; background:#0097a7; color:#fff; font-size:11px; padding:2px 8px; border-radius:10px; }
+
+/* CONTENT */
+#cnt { -ms-flex:1; flex:1; padding:1.25rem; overflow-y:auto; }
+.pg { display:none; }
+.pg.on { display:block; }
+
+/* PAGE TITLES */
+.ptit { font-family:'Rajdhani',Arial,sans-serif; font-size:28px; font-weight:700; letter-spacing:1px; margin-bottom:5px; color:#e0f0ff; }
+.ptit span { color:#00e5ff; }
+.pdesc { font-size:15px; color:#4a7a9b; margin-bottom:1rem; }
+
+/* FLEX GRID — compatível com IE */
+.row { display:-ms-flexbox; display:flex; margin:-5px; }
+.col { -ms-flex:1; flex:1; padding:5px; min-width:0; }
+.col2 { -ms-flex:0 0 50%; flex:0 0 50%; padding:5px; min-width:0; }
+.col3 { -ms-flex:0 0 33.33%; flex:0 0 33.33%; padding:5px; min-width:0; }
+.col4 { -ms-flex:0 0 25%; flex:0 0 25%; padding:5px; min-width:0; }
+.row-wrap { -ms-flex-wrap:wrap; flex-wrap:wrap; }
+.mb8 { margin-bottom:8px; }
+.mb14 { margin-bottom:14px; }
+
+/* CARD */
+.card { background:#131920; border:1px solid #1e3048; border-radius:8px; padding:1rem; }
+.ct { font-family:'Rajdhani',Arial,sans-serif; font-size:15px; font-weight:700; color:#8ab4d4; letter-spacing:1px; text-transform:uppercase; margin-bottom:.7rem; }
+
+/* TOOL BUTTON */
+.tb { display:-ms-flexbox; display:flex; -ms-flex-align:flex-start; align-items:flex-start; background:#131920; border:1px solid #1e3048; border-radius:8px; padding:.85rem 1rem; cursor:pointer; text-align:left; width:100%; color:#e0f0ff; font-family:'Exo 2',Arial,sans-serif; margin-bottom:8px; }
+.tb:hover { border-color:#00bcd4; background:rgba(0,188,212,.05); }
+.tik { width:40px; height:40px; border-radius:6px; display:inline-block; text-align:center; line-height:40px; font-size:19px; margin-right:12px; -ms-flex-negative:0; flex-shrink:0; }
+.tinfo { -ms-flex:1; flex:1; }
+.tn { font-size:16px; font-weight:700; color:#e0f0ff; margin-bottom:3px; }
+.td { font-size:14px; color:#4a7a9b; line-height:1.5; }
+.tbg { font-size:11px; padding:3px 9px; border-radius:10px; font-weight:700; margin-top:5px; display:inline-block; }
+.bc { background:rgba(0,229,255,.1); color:#00e5ff; border:1px solid rgba(0,229,255,.2); }
+.bg { background:rgba(0,255,136,.1); color:#00c853; border:1px solid rgba(0,255,136,.2); }
+.ba { background:rgba(255,171,0,.1); color:#ffab00; border:1px solid rgba(255,171,0,.2); }
+.br { background:rgba(255,23,68,.1); color:#ff1744; border:1px solid rgba(255,23,68,.2); }
+.bpu{ background:rgba(156,39,176,.1); color:#9c27b0; border:1px solid rgba(156,39,176,.2); }
+
+/* TERMINAL */
+.term { background:#060c12; border:1px solid #2a4a6e; border-radius:6px; padding:.85rem; font-family:'Share Tech Mono',Consolas,monospace; font-size:14px; line-height:1.8; height:200px; overflow-y:auto; margin-top:.85rem; }
+.tl { margin-bottom:1px; }
+.tcp { color:#0097a7; }
+.tok { color:#00ff88; }
+.tw  { color:#ffab00; }
+.te  { color:#ff1744; }
+.ti  { color:#8ab4d4; }
+.tdm { color:#4a7a9b; }
+
+/* FORM */
+.fl { display:block; font-size:13px; color:#4a7a9b; letter-spacing:1px; text-transform:uppercase; margin-bottom:6px; }
+.fi { width:100%; background:#1a2332; border:1px solid #2a4a6e; border-radius:5px; padding:10px 12px; color:#e0f0ff; font-family:'Share Tech Mono',Consolas,monospace; font-size:15px; outline:none; margin-bottom:.75rem; }
+.fi:focus { border-color:#00e5ff; }
+
+/* BUTTONS */
+.btn { padding:10px 18px; border-radius:5px; font-family:'Rajdhani',Arial,sans-serif; font-size:16px; font-weight:700; letter-spacing:1px; border:none; cursor:pointer; margin-right:8px; margin-bottom:8px; display:inline-block; }
+.bp { background:#0097a7; color:#000; }
+.bp:hover { background:#00bcd4; }
+.bo { background:transparent; color:#00e5ff; border:1px solid #00bcd4; }
+.bo:hover { background:rgba(0,229,255,.08); }
+.bd { background:#ff1744; color:#fff; }
+
+/* STATS */
+.stat { background:#131920; border:1px solid #1e3048; border-radius:8px; padding:.85rem 1rem; }
+.sl { font-size:13px; color:#4a7a9b; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
+.sv { font-family:'Share Tech Mono',Consolas,monospace; font-size:28px; color:#00e5ff; }
+
+/* STATUS BAR */
+.sbar { display:-ms-flexbox; display:flex; -ms-flex-align:center; align-items:center; padding:8px 12px; background:#1a2332; border:1px solid #1e3048; border-radius:5px; margin-bottom:.85rem; font-family:'Share Tech Mono',Consolas,monospace; font-size:14px; color:#4a7a9b; }
+.dot { width:7px; height:7px; border-radius:50%; -ms-flex-negative:0; flex-shrink:0; margin-right:7px; display:inline-block; }
+.dg { background:#00ff88; }
+.da { background:#ffab00; }
+.dr { background:#ff1744; }
+
+/* PROGRESS */
+.pw { background:#1a2332; border-radius:4px; height:5px; overflow:hidden; margin:4px 0; }
+.pb { height:100%; border-radius:4px; background:#0097a7; -webkit-transition:width .4s; transition:width .4s; }
+
+/* TABLE */
+.tbl { width:100%; border-collapse:collapse; font-size:15px; }
+.tbl th { text-align:left; padding:8px 12px; font-size:13px; color:#4a7a9b; letter-spacing:1px; text-transform:uppercase; border-bottom:1px solid #2a4a6e; font-weight:500; }
+.tbl td { padding:9px 12px; border-bottom:1px solid #1e3048; color:#8ab4d4; }
+.tbl tr:hover td { background:rgba(0,229,255,.03); color:#e0f0ff; }
+.mono { font-family:'Share Tech Mono',Consolas,monospace; font-size:14px; }
+
+/* SECTION TITLE */
+.stit { font-family:'Rajdhani',Arial,sans-serif; font-size:19px; font-weight:700; color:#e0f0ff; margin:1rem 0 .7rem; border-bottom:1px solid #1e3048; padding-bottom:6px; }
+
+/* LOCK */
+.alock { display:-ms-flexbox; display:flex; -ms-flex-align:center; align-items:center; font-size:15px; color:#ffab00; background:rgba(255,171,0,.07); border:1px solid rgba(255,171,0,.2); border-radius:5px; padding:8px 12px; margin-bottom:10px; }
+
+/* GUIDE STEPS */
+.gstep { background:#131920; border:1px solid #1e3048; border-radius:7px; padding:.85rem 1rem; margin-bottom:.6rem; }
+.gsn { display:inline-block; width:28px; height:28px; border-radius:50%; background:#0097a7; color:#000; font-size:14px; font-weight:700; text-align:center; line-height:28px; margin-right:10px; }
+.gst { font-size:17px; font-weight:700; color:#e0f0ff; }
+.gsd { font-size:15px; color:#8ab4d4; margin-top:5px; margin-left:38px; line-height:1.7; }
+.gsc { font-family:'Share Tech Mono',Consolas,monospace; font-size:14px; color:#00e5ff; background:rgba(0,229,255,.06); border:1px solid rgba(0,229,255,.15); border-radius:4px; padding:6px 10px; margin-top:6px; margin-left:38px; display:block; }
+
+/* REPORT VIEWER */
+.rv { background:#060c12; border:1px solid #2a4a6e; border-radius:6px; padding:1rem; font-family:'Share Tech Mono',Consolas,monospace; font-size:14px; line-height:1.8; height:350px; overflow-y:auto; color:#8ab4d4; }
+
+/* GITHUB BADGE */
+.ghbadge { display:-ms-flexbox; display:flex; -ms-flex-align:center; align-items:center; background:rgba(0,229,255,.04); border:1px solid rgba(0,229,255,.15); border-radius:7px; padding:10px 14px; font-size:15px; color:#8ab4d4; margin-bottom:.85rem; }
+.ghbadge a { color:#00e5ff; text-decoration:none; }
+
+/* TOAST */
+#toasts { position:fixed; bottom:1.25rem; right:1.25rem; z-index:9500; }
+.toast { background:#1a2332; border:1px solid #2a4a6e; border-radius:7px; padding:10px 16px; font-size:15px; color:#e0f0ff; margin-bottom:6px; display:-ms-flexbox; display:flex; -ms-flex-align:center; align-items:center; max-width:360px; }
+.toast.ok  { border-color:rgba(0,200,83,.4); background:rgba(0,200,83,.07); }
+.toast.er  { border-color:rgba(255,23,68,.4); background:rgba(255,23,68,.07); }
+.toast.inf { border-color:rgba(0,229,255,.3); background:rgba(0,229,255,.05); }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width:6px; }
+::-webkit-scrollbar-track { background:#0d1117; }
+::-webkit-scrollbar-thumb { background:#2a4a6e; border-radius:4px; }
+</style>
+</head>
+<body>
+
+<!-- AUTH OVERLAY -->
+<div id="authOv">
+  <div class="abox">
+    <div class="alogo">
+      <div class="aic">MF</div>
+      <div class="atit">MicroFast Técnico v3</div>
+      <div class="asub">Pendrive de Manutenção Profissional · Santos/SP</div>
+    </div>
+    <div class="atabs">
+      <button class="atab on" id="tabP" onclick="setTab('P')">🔧 Técnico</button>
+      <button class="atab"    id="tabC" onclick="setTab('C')">🏢 SGS Corporativo</button>
+    </div>
+    <div id="frmP">
+      <div class="afield">
+        <label>Senha Técnico</label>
+        <input type="password" id="tpwd" autocomplete="off" onkeydown="if(event.keyCode==13)doAuth()"/>
+      </div>
+    </div>
+    <div id="frmC" style="display:none">
+      <div class="afield">
+        <label>E-mail ADM</label>
+        <input type="text" value="antonio.oliveira.adm@sgs.com" readonly style="color:#4a7a9b"/>
+      </div>
+      <div class="afield">
+        <label>Senha Corporativa SGS</label>
+        <input type="password" id="cpwd" autocomplete="off" onkeydown="if(event.keyCode==13)doAuth()"/>
+      </div>
+    </div>
+    <button class="abtn" onclick="doAuth()">ACESSAR PAINEL</button>
+    <div class="amsg" id="amsg"></div>
+    <div class="anote" id="anote">Primeiro acesso: defina sua senha (mínimo 6 caracteres)</div>
+    <div style="text-align:center;font-size:14px;color:#4a7a9b;margin-top:8px" id="amode">Verificando ambiente...</div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div id="hdr">
+  <div class="hlogo">
+    <div class="hic">MF</div>
+    <div>
+      <div class="htxt">MICRO<span>FAST</span></div>
+      <div class="hsub">Pendrive Técnico v3.0</div>
+    </div>
+  </div>
+  <div class="hright">
+    <div class="hmode offline" id="hmode">OFFLINE</div>
+    <div class="hbadge" id="hbadge">TÉCNICO</div>
+    <div class="hclk" id="clk">--:--:--</div>
+    <button class="hbtn" onclick="logout()">sair ✕</button>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div id="lay">
+
+<!-- SIDEBAR -->
+<div id="sb">
+  <div class="ns">Principal</div>
+  <div class="ni on" onclick="pg('dash')"><span class="nic">⚡</span>Dashboard</div>
+  <div class="ni" onclick="pg('diag')"><span class="nic">🔍</span>Diagnóstico</div>
+  <div class="ni" onclick="pg('clean')"><span class="nic">🧹</span>Limpeza</div>
+  <div class="ni" onclick="pg('relat')"><span class="nic">📋</span>Relatórios&nbsp;<span class="nbg" id="nRelat">0</span></div>
+  <div class="ni" onclick="pg('hardware')"><span class="nic">🖥️</span>Hardware Live</div>
+  <div class="ni" onclick="pg('historico')"><span class="nic">📊</span>Histórico</div>
+  <div class="ns">Ferramentas</div>
+  <div class="ni" onclick="pg('rede')"><span class="nic">📡</span>Rede</div>
+  <div class="ni" onclick="pg('drivers')"><span class="nic">🔧</span>Drivers</div>
+  <div class="ni" onclick="pg('progs')"><span class="nic">📦</span>Programas</div>
+  <div class="ni" onclick="pg('winupd')"><span class="nic">🪟</span>Win Update</div>
+  <div class="ni" onclick="pg('tools')"><span class="nic">🛠️</span>Ferramentas</div>
+  <div class="ns">Guias</div>
+  <div class="ni" onclick="pg('guias')"><span class="nic">📖</span>Passo a Passo</div>
+  <div class="ns">Sistema</div>
+  <div class="ni" onclick="pg('admin')"><span class="nic">🔐</span>Admin / SGS</div>
+  <div class="ni" onclick="pg('update')"><span class="nic">🔄</span>Atualizar</div>
+  <div class="ni" onclick="pg('cfg')"><span class="nic">⚙️</span>Configurações</div>
+</div>
+
+<!-- MAIN -->
+<div id="cnt">
+
+<!-- DASHBOARD -->
+<div class="pg on" id="pg-dash">
+  <div class="ptit">Dashboard <span>Técnico</span></div>
+  <div class="pdesc">Painel híbrido — HTA (pendrive) e navegador (online)</div>
+  <div class="ghbadge">
+    <span style="margin-right:4px">🐙</span>
+    <span style="margin-right:6px">Repositório:</span>
+    <a href="#" onclick="abrirURL('https://github.com/arsgoliveira/pendrive-tecnico-mf');return false;">github.com/arsgoliveira/pendrive-tecnico-mf</a>
+    <span style="margin-left:auto;color:#4a7a9b" id="ghVer">v3.0.0</span>
+  </div>
+  <div class="sbar"><span class="dot dg"></span><span id="dSt">Sistema pronto — todos os módulos carregados</span></div>
+  <div style="background:rgba(255,171,0,.08);border:1px solid rgba(255,171,0,.3);border-radius:7px;padding:8px 14px;margin-bottom:.875rem;display:-ms-flexbox;display:flex;-ms-flex-align:center;align-items:center;gap:10px;">
+    <span style="font-size:16px;flex-shrink:0">🛡️</span>
+    <span style="font-size:12px;color:#ffab00;-ms-flex:1;flex:1"><strong>1º uso ou erro de antivírus?</strong> Execute <strong>SETUP-DEFENDER.bat</strong> como Admin para liberar os scripts no Windows Defender.</span>
+    <button class="btn ba" style="font-size:11px;padding:5px 12px;white-space:nowrap;flex-shrink:0" onclick="execSetupDefender()">⚙️ Setup</button>
+  </div>
+  <div class="row mb14">
+    <div class="col4"><div class="stat"><div class="sl">Ações sessão</div><div class="sv" id="sCnt">0</div></div></div>
+    <div class="col4"><div class="stat"><div class="sl">Diagnósticos</div><div class="sv" id="sDiag">0</div></div></div>
+    <div class="col4"><div class="stat"><div class="sl">Modo</div><div class="sv" style="font-size:20px;padding-top:4px" id="sModo">Técnico</div></div></div>
+    <div class="col4"><div class="stat"><div class="sl">Ambiente</div><div class="sv" style="font-size:20px;padding-top:4px" id="sEnv">HTA</div></div></div>
+  </div>
+  <div class="stit">Acesso Rápido</div>
+  <div class="row row-wrap">
+    <div class="col3"><button class="tb" onclick="pg('diag')"><span class="tik" style="background:rgba(0,229,255,.1)">🔍</span><span class="tinfo"><span class="tn">Diagnóstico Completo</span><br><span class="td">Hardware real + avaliação upgrade + relatório</span><br><span class="tbg bc">Gera TXT</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execLimpeza()"><span class="tik" style="background:rgba(0,255,136,.1)">🧹</span><span class="tinfo"><span class="tn">Limpeza Automática</span><br><span class="td">Temp, Prefetch, Lixeira, WU, DNS</span><br><span class="tbg bg">1 Clique</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="pg('rede')"><span class="tik" style="background:rgba(0,188,212,.1)">📡</span><span class="tinfo"><span class="tn">Ferramentas de Rede</span><br><span class="td">Ping, tracert, DNS, port scan</span><br><span class="tbg bc">Completo</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execDrivers('detectar')"><span class="tik" style="background:rgba(0,188,212,.08)">🖥️</span><span class="tinfo"><span class="tn">Detectar Hardware</span><br><span class="td">Modelo real + site do fabricante</span><br><span class="tbg bc">Auto</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execBaixarTools()"><span class="tik" style="background:rgba(0,255,136,.1)">⬇️</span><span class="tinfo"><span class="tn">Baixar Ferramentas</span><br><span class="td">CrystalDisk, HWiNFO, CPU-Z, Rufus</span><br><span class="tbg bg">1ª vez</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="pg('guias')"><span class="tik" style="background:rgba(255,171,0,.1)">📖</span><span class="tinfo"><span class="tn">Guias Passo a Passo</span><br><span class="td">Tutoriais para cada ferramenta</span><br><span class="tbg ba">Tutorial</span></span></button></div>
+  </div>
+  <div class="term" id="dTerm">
+    <div class="tl"><span class="tok">[OK]</span> <span class="ti">MicroFast Técnico v3.0 inicializado</span></div>
+    <div class="tl"><span class="tok">[OK]</span> <span class="tdm">Repositório: github.com/arsgoliveira/pendrive-tecnico-mf</span></div>
+    <div class="tl"><span class="ti">[INFO]</span> <span class="tdm">Scripts: diagnostico.ps1 | limpeza.bat | rede.ps1 | drivers.ps1</span></div>
+  </div>
+</div>
+
+<!-- DIAGNÓSTICO -->
+<div class="pg" id="pg-diag">
+  <div class="ptit">🔍 <span>Diagnóstico</span> Completo</div>
+  <div class="pdesc">diagnostico.ps1 — coleta dados reais + Score A–F + relatório .TXT formato SGS</div>
+  <div class="row mb14">
+    <div class="col2">
+      <div class="card">
+        <div class="ct">Dados do Atendimento</div>
+        <label class="fl">Nome do Cliente / PC</label>
+        <input class="fi" id="dCli" placeholder="Ex: João Silva / NOTEBOOK-01"/>
+        <label class="fl">Contexto</label>
+        <select class="fi" id="dCtx"><option>SGS</option><option>MicroFast Informática</option><option>Hidromares by SGS</option><option>Outro</option></select>
+        <label class="fl">Observações</label>
+        <input class="fi" id="dObs" placeholder="Ex: PC lento, tela azul"/>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="card">
+        <div class="ct">O que é coletado</div>
+        <div style="font-size:15px;color:#8ab4d4;line-height:2.2">
+          ✅ SO, versão, build, último boot<br>
+          ✅ Usuário, domínio, perfil<br>
+          ✅ CPU: modelo, núcleos, threads<br>
+          ✅ RAM: total, uso, slots, velocidade<br>
+          ✅ Disco: SMART nativo, espaço, SSD/HDD<br>
+          ✅ GPU: modelo, driver, VRAM<br>
+          ✅ Rede: interfaces, IP, gateway, ping<br>
+          ✅ Windows Update pendentes<br>
+          ✅ Programas instalados (lista completa)<br>
+          ✅ Bateria + powercfg/batteryreport<br>
+          ✅ <strong style="color:#00e5ff">Score upgrade A–F automático</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="btn bp" onclick="execDiag()">▶ EXECUTAR DIAGNÓSTICO</button>
+  <button class="btn bo" onclick="execAbrirRelats()">📁 Pasta Relatórios</button>
+  <button class="btn bo" onclick="pg('relat')">📋 Ver Relatórios</button>
+  <div id="dprog" style="display:none;margin:.5rem 0 0">
+    <div style="display:-ms-flexbox;display:flex;-ms-flex-pack:justify;justify-content:space-between;font-size:11px;color:#4a7a9b;margin-bottom:3px">
+      <span id="dstep">Aguardando...</span><span id="dpct">0%</span>
+    </div>
+    <div class="pw"><div class="pb" id="dpb" style="width:0%"></div></div>
+  </div>
+  <div class="term" id="diagT"><div class="tl"><span class="tdm">Aguardando diagnóstico...</span></div></div>
+</div>
+
+<!-- LIMPEZA -->
+<div class="pg" id="pg-clean">
+  <div class="ptit">🧹 Limpeza <span>Automática</span></div>
+  <div class="pdesc">limpeza.bat executado como Administrador — ação real no sistema</div>
+  <div class="row mb14">
+    <div class="col2">
+      <div class="card">
+        <div class="ct">limpeza.bat remove</div>
+        <div style="font-size:15px;color:#8ab4d4;line-height:2.2">
+          ✅ %TEMP% — pasta temp do usuário<br>
+          ✅ C:\Windows\Temp — temp do sistema<br>
+          ✅ C:\Windows\Prefetch<br>
+          ✅ Lixeira (todos os usuários)<br>
+          ✅ Cache Windows Update<br>
+          ✅ Cache DNS (ipconfig /flushdns)
+        </div>
+        <br/>
+        <button class="btn bp" style="width:100%" onclick="execLimpeza()">🧹 EXECUTAR LIMPEZA REAL</button>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="card">
+        <div class="ct">Limpeza Extra</div>
+        <button class="tb" onclick="execCleanBrowser()"><span class="tik" style="background:rgba(0,229,255,.08)">🌐</span><span class="tinfo"><span class="tn">Cache de Navegadores</span><br><span class="td">Chrome, Edge, Firefox</span></span></button>
+        <button class="tb" onclick="execCleanLogs()"><span class="tik" style="background:rgba(0,229,255,.08)">📋</span><span class="tinfo"><span class="tn">Limpar Event Logs</span><br><span class="td">Logs de eventos antigos</span></span></button>
+        <div id="cleanRes" style="font-size:14px;color:#4a7a9b;margin-top:.875rem">Nenhuma limpeza executada.</div>
+      </div>
+    </div>
+  </div>
+  <div class="term" id="cleanT"><div class="tl"><span class="tdm">Aguardando limpeza...</span></div></div>
+</div>
+
+<!-- RELATÓRIOS -->
+<div class="pg" id="pg-relat">
+  <div class="ptit">📋 <span>Relatórios</span></div>
+  <div class="pdesc">Diagnósticos e relatórios de bateria salvos em relatorios\</div>
+  <button class="btn bp" onclick="execAbrirRelats()">📁 Abrir no Explorer</button>
+  <button class="btn bo" onclick="carregarRelats()">🔄 Atualizar Lista</button>
+  <br/><br/>
+  <div class="card mb14">
+    <div class="ct">Relatórios Disponíveis</div>
+    <div id="relatList" style="font-size:15px;color:#4a7a9b">Clique em "Atualizar Lista" para carregar...</div>
+  </div>
+  <div class="stit">Visualizador</div>
+  <div class="rv" id="relatViewer"><span style="color:#4a7a9b">Selecione um relatório acima...</span></div>
+</div>
+
+<!-- REDE -->
+<div class="pg" id="pg-rede">
+  <div class="ptit">📡 Ferramentas de <span>Rede</span></div>
+  <div class="pdesc">rede.ps1 — menu interativo com ping, traceroute, DNS, port scan, velocidade</div>
+  <div class="row row-wrap">
+    <div class="col3"><button class="tb" onclick="execRede(1)"><span class="tik" style="background:rgba(0,229,255,.1)">📶</span><span class="tinfo"><span class="tn">Ping Avançado</span><br><span class="td">10 pings: min/max/média/perda%</span><br><span class="tbg bc">PS</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execRede(2)"><span class="tik" style="background:rgba(0,229,255,.08)">🗺️</span><span class="tinfo"><span class="tn">Traceroute</span><br><span class="td">Rota completa salto a salto</span><br><span class="tbg bc">tracert</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execRede(3)"><span class="tik" style="background:rgba(0,255,136,.08)">🔍</span><span class="tinfo"><span class="tn">Diagnóstico DNS</span><br><span class="td">Resolve hosts, testa servidores</span><br><span class="tbg bg">DNS</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execRede(4)"><span class="tik" style="background:rgba(0,188,212,.08)">🖧</span><span class="tinfo"><span class="tn">Info das Interfaces</span><br><span class="td">ipconfig /all + ARP + rotas</span><br><span class="tbg bc">ipconfig</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execRede(5)"><span class="tik" style="background:rgba(0,255,136,.1)">⚡</span><span class="tinfo"><span class="tn">Teste de Velocidade</span><br><span class="td">Download de referência + latência</span><br><span class="tbg bg">Speed</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execRede(6)"><span class="tik" style="background:rgba(255,171,0,.08)">🔬</span><span class="tinfo"><span class="tn">Varredura de Portas</span><br><span class="td">Port scan TCP em IP remoto</span><br><span class="tbg ba">TCP</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execRede(7)"><span class="tik" style="background:rgba(0,229,255,.08)">👁️</span><span class="tinfo"><span class="tn">Monitorar Conexões</span><br><span class="td">netstat em tempo real</span><br><span class="tbg bc">netstat</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execRede(8)"><span class="tik" style="background:rgba(0,255,136,.1)">✅</span><span class="tinfo"><span class="tn">Teste Completo</span><br><span class="td">Verifica todos os servidores</span><br><span class="tbg bg">Full</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execRede(9)"><span class="tik" style="background:rgba(255,171,0,.1)">🔄</span><span class="tinfo"><span class="tn">Renovar IP (DHCP)</span><br><span class="td">ipconfig /release + /renew</span><br><span class="tbg ba">DHCP</span></span></button></div>
+  </div>
+  <div class="term" id="redeT"><div class="tl"><span class="tdm">Selecione uma ferramenta...</span></div></div>
+</div>
+
+<!-- DRIVERS -->
+<div class="pg" id="pg-drivers">
+  <div class="ptit">🖥️ Gestão de <span>Drivers</span></div>
+  <div class="pdesc">drivers.ps1 — detecta fabricante real e abre site correto automaticamente</div>
+  <div class="row row-wrap">
+    <div class="col3"><button class="tb" onclick="execDrivers('detectar')"><span class="tik" style="background:rgba(0,229,255,.1)">🔎</span><span class="tinfo"><span class="tn">Detectar Hardware</span><br><span class="td">Modelo + site do fabricante</span><br><span class="tbg bc">Auto</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execDrivers('atualizar')"><span class="tik" style="background:rgba(0,255,136,.1)">🔄</span><span class="tinfo"><span class="tn">Atualizar Todos</span><br><span class="td">pnputil + Windows Update</span><br><span class="tbg bg">pnputil</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execDrivers('display')"><span class="tik" style="background:rgba(0,229,255,.08)">🖥️</span><span class="tinfo"><span class="tn">Driver Vídeo</span><br><span class="td">NVIDIA / AMD / Intel</span><br><span class="tbg bc">GPU</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execDrivers('audio')"><span class="tik" style="background:rgba(0,255,136,.08)">🔊</span><span class="tinfo"><span class="tn">Driver Áudio</span><br><span class="td">Realtek HDA — winget/pnputil</span><br><span class="tbg bg">Áudio</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execDrivers('rede')"><span class="tik" style="background:rgba(0,188,212,.08)">📶</span><span class="tinfo"><span class="tn">Driver Rede/Wi-Fi</span><br><span class="td">Intel / Realtek / Qualcomm</span><br><span class="tbg bc">Rede</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execPnputil()"><span class="tik" style="background:rgba(255,171,0,.08)">⚙️</span><span class="tinfo"><span class="tn">pnputil Scan</span><br><span class="td">Reescanear dispositivos</span><br><span class="tbg ba">CMD</span></span></button></div>
+  </div>
+  <div class="term" id="driverT"><div class="tl"><span class="tdm">Aguardando ação...</span></div></div>
+</div>
+
+<!-- PROGRAMAS -->
+<div class="pg" id="pg-progs">
+  <div class="ptit">📦 <span>Programas</span></div>
+  <div class="pdesc">Instalação silenciosa via winget — requer autenticação SGS</div>
+  <div class="alock">🏢 Instalar/desinstalar requer senha SGS: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="52333c263d3c3b3d7c3d3e3b24373b20337c33363f122135217c313d3f">[email&#160;protected]</a></div>
+  <div class="row mb14">
+    <div class="col2">
+      <div class="card">
+        <div class="ct">Instalação Manual</div>
+        <label class="fl">ID winget</label>
+        <input class="fi" id="pkgId" placeholder="Ex: Google.Chrome"/>
+        <label class="fl">Nome amigável</label>
+        <input class="fi" id="pkgNm" placeholder="Ex: Google Chrome"/>
+        <button class="btn bp" style="width:100%" onclick="execInstalar()">INSTALAR SILENCIOSAMENTE</button>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="card">
+        <div class="ct">Pacotes Rápidos — Navegadores</div>
+        <button class="tb" onclick="instR('Google.Chrome','Google Chrome')"><span style="font-size:14px;margin-right:10px">🌐</span><span class="tn">Google Chrome</span></button>
+        <button class="tb" onclick="instR('Mozilla.Firefox','Firefox')"><span style="font-size:14px;margin-right:10px">🦊</span><span class="tn">Mozilla Firefox</span></button>
+        <button class="tb" onclick="instR('Opera.Opera','Opera Browser')"><span style="font-size:14px;margin-right:10px">🔴</span><span class="tn">Opera Browser</span></button>
+        <button class="tb" onclick="instR('Brave.Brave','Brave Browser')"><span style="font-size:14px;margin-right:10px">🦁</span><span class="tn">Brave Browser</span></button>
+        <div class="ct" style="margin-top:8px">Essenciais</div>
+        <button class="tb" onclick="instR('VideoLAN.VLC','VLC')"><span style="font-size:14px;margin-right:10px">📹</span><span class="tn">VLC Media Player</span></button>
+        <button class="tb" onclick="instR('7zip.7zip','7-Zip')"><span style="font-size:14px;margin-right:10px">📦</span><span class="tn">7-Zip</span></button>
+        <button class="tb" onclick="instR('Adobe.Acrobat.Reader.64-bit','Adobe Reader')"><span style="font-size:14px;margin-right:10px">📄</span><span class="tn">Adobe Reader</span></button>
+        <button class="tb" onclick="instR('Notepad++.Notepad++','Notepad++')"><span style="font-size:14px;margin-right:10px">📝</span><span class="tn">Notepad++</span></button>
+        <button class="tb" onclick="instR('Microsoft.Office','Microsoft Office')"><span style="font-size:14px;margin-right:10px">📊</span><span class="tn">Microsoft Office</span></button>
+        <button class="tb" onclick="instR('WhatsApp.WhatsApp','WhatsApp Desktop')"><span style="font-size:14px;margin-right:10px">💬</span><span class="tn">WhatsApp Desktop</span></button>
+      </div>
+    </div>
+  </div>
+  <div class="term" id="pkgT"><div class="tl"><span class="tdm">Aguardando...</span></div></div>
+  <div class="stit">🗑️ Desinstalar Programas</div>
+  <div class="row mb14">
+    <div class="col2">
+      <div class="card">
+        <div class="ct">Busca Rápida</div>
+        <label class="fl">Nome do programa</label>
+        <input class="fi" id="desinstNm" placeholder="Ex: Bloatware, McAfee..."/>
+        <button class="btn bd" style="width:100%" onclick="execDesinstalar()">🗑️ BUSCAR E DESINSTALAR</button>
+        <div style="font-size:11px;color:#4a7a9b;margin-top:6px">Usa winget ou UninstallString do registro</div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="card">
+        <div class="ct">Menu Interativo</div>
+        <div style="font-size:13px;color:#8ab4d4;line-height:1.8;margin-bottom:.75rem">Abre o script com lista completa de programas instalados. Escolha pelo número e confirme para desinstalar silenciosamente.</div>
+        <button class="btn bp" style="width:100%" onclick="execDesinstalarMenu()">📋 ABRIR LISTA COMPLETA</button>
+      </div>
+    </div>
+  </div>
+  <div class="term" id="desinstT"><div class="tl"><span class="tdm">Aguardando...</span></div></div>
+</div>
+
+<!-- WIN UPDATE -->
+<div class="pg" id="pg-winupd">
+  <div class="ptit">🪟 Windows <span>Update</span></div>
+  <div class="pdesc">windows-update.ps1 — ação real via PSWindowsUpdate</div>
+  <div class="row row-wrap mb14">
+    <div class="col2"><button class="tb" onclick="execWU('verificar')"><span class="tik" style="background:rgba(0,229,255,.1)">🔎</span><span class="tinfo"><span class="tn">Verificar Atualizações</span><br><span class="td">Lista pendências sem instalar</span><br><span class="tbg bc">Seguro</span></span></button></div>
+    <div class="col2"><button class="tb" onclick="execWU('instalar')"><span class="tik" style="background:rgba(0,255,136,.1)">⬇️</span><span class="tinfo"><span class="tn">Instalar Tudo</span><br><span class="td">Baixa e instala todas</span><br><span class="tbg bg">Reinício</span></span></button></div>
+    <div class="col2"><button class="tb" onclick="execWU('seguranca')"><span class="tik" style="background:rgba(255,171,0,.1)">🛡️</span><span class="tinfo"><span class="tn">Só Segurança</span><br><span class="td">Apenas patches críticos</span><br><span class="tbg ba">Crítico</span></span></button></div>
+    <div class="col2"><button class="tb" onclick="execWU('defender')"><span class="tik" style="background:rgba(0,229,255,.08)">🦠</span><span class="tinfo"><span class="tn">Atualizar Defender</span><br><span class="td">Definições do antivírus</span><br><span class="tbg bc">AV</span></span></button></div>
+  </div>
+  <div class="term" id="wuT"><div class="tl"><span class="tdm">Aguardando...</span></div></div>
+</div>
+
+<!-- FERRAMENTAS -->
+<div class="pg" id="pg-tools">
+  <div class="ptit">🛠️ Ferramentas <span>Portables</span></div>
+  <div class="pdesc">Abre da pasta tools\ — se ausente, baixa via winget ou abre o site</div>
+  <button class="btn bp" onclick="execBaixarTools()" style="margin-bottom:.75rem">⬇️ BAIXAR TODAS (1ª vez — requer internet)</button>
+
+  <div class="stit">💻 Diagnóstico de Hardware</div>
+  <div class="row row-wrap">
+    <div class="col3"><button class="tb" onclick="execTool('crystaldiskinfo')"><span class="tik" style="background:rgba(0,229,255,.08)">💾</span><span class="tinfo"><span class="tn">CrystalDiskInfo</span><br><span class="td">Saúde HDD/SSD via SMART</span><br><span class="tbg bc">tools\</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execTool('crystaldiskmark')"><span class="tik" style="background:rgba(0,229,255,.08)">⚡</span><span class="tinfo"><span class="tn">CrystalDiskMark</span><br><span class="td">Benchmark velocidade disco</span><br><span class="tbg bc">tools\</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execTool('hwinfo')"><span class="tik" style="background:rgba(0,229,255,.08)">🌡️</span><span class="tinfo"><span class="tn">HWiNFO64</span><br><span class="td">Monitor hardware + temperatura</span><br><span class="tbg bc">tools\</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execTool('cpuz')"><span class="tik" style="background:rgba(0,255,136,.08)">⚙️</span><span class="tinfo"><span class="tn">CPU-Z</span><br><span class="td">CPU, RAM, placa-mãe detalhado</span><br><span class="tbg bg">tools\</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execTool('gpuz')"><span class="tik" style="background:rgba(255,171,0,.08)">🎮</span><span class="tinfo"><span class="tn">GPU-Z</span><br><span class="td">Info completa de placa de vídeo</span><br><span class="tbg ba">tools\</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execTool('speccy')"><span class="tik" style="background:rgba(156,39,176,.1)">📊</span><span class="tinfo"><span class="tn">Speccy</span><br><span class="td">Resumo visual do hardware</span><br><span class="tbg bpu">tools\</span></span></button></div>
+  </div>
+
+  <div class="stit">📡 Rede &amp; Acesso Remoto</div>
+  <div class="row row-wrap">
+    <div class="col3"><button class="tb" onclick="execTool('rustdesk')"><span class="tik" style="background:rgba(0,229,255,.08)">🖥️</span><span class="tinfo"><span class="tn">RustDesk</span><br><span class="td">Acesso remoto open source</span><br><span class="tbg bc">tools\</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execTool('anydesk')"><span class="tik" style="background:rgba(0,255,136,.08)">🔗</span><span class="tinfo"><span class="tn">AnyDesk</span><br><span class="td">Acesso remoto rápido</span><br><span class="tbg bg">tools\</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execTool('putty')"><span class="tik" style="background:rgba(0,229,255,.08)">🔒</span><span class="tinfo"><span class="tn">PuTTY</span><br><span class="td">SSH / Telnet / Serial</span><br><span class="tbg bc">tools\</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execTool('ipscanner')"><span class="tik" style="background:rgba(0,255,136,.08)">🔍</span><span class="tinfo"><span class="tn">Advanced IP Scanner</span><br><span class="td">Descobre dispositivos na rede</span><br><span class="tbg bg">winget</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execTool('wireshark')"><span class="tik" style="background:rgba(0,188,212,.08)">🦈</span><span class="tinfo"><span class="tn">Wireshark</span><br><span class="td">Captura e análise de pacotes</span><br><span class="tbg bc">winget</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execTool('tcpview')"><span class="tik" style="background:rgba(0,229,255,.08)">👁️</span><span class="tinfo"><span class="tn">TCPView</span><br><span class="td">Monitor conexões TCP/UDP</span><br><span class="tbg bc">tools\</span></span></button></div>
+  </div>
+
+  <div class="stit">🛡️ Segurança</div>
+  <div class="row row-wrap">
+    <div class="col3"><button class="tb" onclick="execTool('malwarebytes')"><span class="tik" style="background:rgba(255,23,68,.08)">🦠</span><span class="tinfo"><span class="tn">Malwarebytes</span><br><span class="td">Scanner de malware completo</span><br><span class="tbg br">winget</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execTool('adwcleaner')"><span class="tik" style="background:rgba(255,23,68,.08)">🧽</span><span class="tinfo"><span class="tn">AdwCleaner</span><br><span class="td">Remove adware e PUPs</span><br><span class="tbg br">tools\</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execTool('rkill')"><span class="tik" style="background:rgba(255,171,0,.08)">💀</span><span class="tinfo"><span class="tn">RKill</span><br><span class="td">Mata processos de malware</span><br><span class="tbg ba">tools\</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execTool('autoruns')"><span class="tik" style="background:rgba(0,229,255,.08)">🚀</span><span class="tinfo"><span class="tn">Autoruns</span><br><span class="td">Gerencia inicialização</span><br><span class="tbg bc">tools\</span></span></button></div>
+  </div>
+
+  <div class="stit">🔧 Utilitários</div>
+  <div class="row row-wrap">
+    <div class="col3"><button class="tb" onclick="execTool('rufus')"><span class="tik" style="background:rgba(0,229,255,.08)">🔥</span><span class="tinfo"><span class="tn">Rufus</span><br><span class="td">Cria pendrives bootáveis</span><br><span class="tbg bc">tools\</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execTool('procexp')"><span class="tik" style="background:rgba(0,255,136,.08)">📊</span><span class="tinfo"><span class="tn">Process Explorer</span><br><span class="td">Task Manager avançado</span><br><span class="tbg bg">tools\</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execTool('treesize')"><span class="tik" style="background:rgba(0,188,212,.08)">📁</span><span class="tinfo"><span class="tn">TreeSize Free</span><br><span class="td">Mostra uso de disco por pasta</span><br><span class="tbg bc">winget</span></span></button></div>
+  </div>
+
+  <div class="stit">🔥 Stress Test</div>
+  <div class="row row-wrap">
+    <div class="col3"><button class="tb" onclick="execTool('prime95')"><span class="tik" style="background:rgba(255,171,0,.08)">🔥</span><span class="tinfo"><span class="tn">Prime95</span><br><span class="td">Stress test CPU (estabilidade)</span><br><span class="tbg ba">tools\</span></span></button></div>
+    <div class="col3"><button class="tb" onclick="execTool('furmark')"><span class="tik" style="background:rgba(255,23,68,.08)">🎮</span><span class="tinfo"><span class="tn">FurMark</span><br><span class="td">Stress test GPU (temperatura)</span><br><span class="tbg br">winget</span></span></button></div>
+  </div>
+
+  <div class="term" id="toolT" style="margin-top:.875rem"><div class="tl"><span class="tdm">Selecione uma ferramenta...</span></div></div>
+</div>
+
+<!-- GUIAS -->
+<div class="pg" id="pg-guias">
+  <div class="ptit">📖 Guias <span>Passo a Passo</span></div>
+  <div class="pdesc">Como usar cada ferramenta — referência rápida para o técnico</div>
+  <div style="margin-bottom:.875rem">
+    <button class="btn bo" onclick="guia('diag')">🔍 Diagnóstico</button>
+    <button class="btn bo" onclick="guia('clean')">🧹 Limpeza</button>
+    <button class="btn bo" onclick="guia('rede')">📡 Rede</button>
+    <button class="btn bo" onclick="guia('hwinfo')">🌡️ HWiNFO</button>
+    <button class="btn bo" onclick="guia('cdisk')">💾 CrystalDisk</button>
+    <button class="btn bo" onclick="guia('malware')">🦠 Malware</button>
+    <button class="btn bo" onclick="guia('drivers')">🖥️ Drivers</button>
+    <button class="btn bo" onclick="guia('winupd')">🪟 Win Update</button>
+  </div>
+  <div id="guiaBox"><div class="card"><div style="color:#4a7a9b;font-size:13px">Selecione um guia acima.</div></div></div>
+</div>
+
+<!-- ADMIN -->
+<div class="pg" id="pg-admin">
+  <div class="ptit">🔐 Admin <span>/ SGS</span></div>
+  <div class="pdesc">Autenticação corporativa e execução com privilégios elevados</div>
+  <div class="row mb14">
+    <div class="col2">
+      <div class="card">
+        <div class="ct">Sessão Corporativa SGS</div>
+        <div class="sbar"><span class="dot" id="sgsDot" style="background:#ffab00"></span><span id="sgsLbl">Não autenticado</span></div>
+        <label class="fl">E-mail ADM</label>
+        <input class="fi" value="antonio.oliveira.adm@sgs.com" readonly style="color:#4a7a9b"/>
+        <label class="fl">Senha SGS</label>
+        <input class="fi" type="password" id="sgsPwd" onkeydown="if(event.keyCode==13)authSGS()"/>
+        <button class="btn bp" onclick="authSGS()">🔐 AUTENTICAR NA SGS</button>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="card">
+        <div class="ct">Executar com Privilégios</div>
+        <button class="tb" onclick="execAdmin('cmd')"><span style="font-size:14px;margin-right:10px">💻</span><span class="tinfo"><span class="tn">CMD como Administrador</span><br><span class="td">Prompt elevado</span></span></button>
+        <button class="tb" onclick="execAdmin('powershell')"><span style="font-size:14px;margin-right:10px">🔷</span><span class="tinfo"><span class="tn">PowerShell como Admin</span><br><span class="td">PS elevado, Bypass</span></span></button>
+        <button class="tb" onclick="execAdmin('regedit')"><span style="font-size:14px;margin-right:10px">⚙️</span><span class="tinfo"><span class="tn">RegEdit como Admin</span></span></button>
+        <button class="tb" onclick="execAdmin('gpedit')"><span style="font-size:14px;margin-right:10px">🛡️</span><span class="tinfo"><span class="tn">Editor de Políticas de Grupo</span></span></button>
+      </div>
+    </div>
+  </div>
+  <div class="term" id="adminT"><div class="tl"><span class="tdm">Aguardando autenticação...</span></div></div>
+</div>
+
+<!-- ATUALIZAR -->
+<div class="pg" id="pg-update">
+  <div class="ptit">🔄 Atualizar <span>Pendrive</span></div>
+  <div class="pdesc">Sincroniza com github.com/arsgoliveira/pendrive-tecnico-mf</div>
+  <div class="card mb14">
+    <div class="ct">Repositório GitHub</div>
+    <div class="row">
+      <div class="col2">
+        <label class="fl">Repositório</label>
+        <input class="fi" id="ghRepo" value="arsgoliveira/pendrive-tecnico-mf"/>
+        <label class="fl">Branch</label>
+        <input class="fi" id="ghBranch" value="main"/>
+      </div>
+      <div class="col2">
+        <label class="fl">Token (privado)</label>
+        <input class="fi" type="password" id="ghTok" placeholder="ghp_xxxx (opcional)"/>
+        <label class="fl">Última sync</label>
+        <input class="fi" id="ghLast" value="Nunca" readonly style="color:#4a7a9b"/>
+      </div>
+    </div>
+  </div>
+  <button class="btn bp" onclick="execGitCheck()">🔎 VERIFICAR ATUALIZAÇÕES</button>
+  <button class="btn bo" onclick="execGitPull()">⬇️ BAIXAR E APLICAR</button>
+  <button class="btn bo" onclick="abrirURL('https://github.com/arsgoliveira/pendrive-tecnico-mf')">🐙 Abrir no GitHub</button>
+  <div class="term" id="gitT"><div class="tl"><span class="tdm">Aguardando sync...</span></div></div>
+</div>
+
+<!-- CONFIG -->
+<div class="pg" id="pg-cfg">
+  <div class="ptit">⚙️ <span>Configurações</span></div>
+  <div class="pdesc">Identidade e credenciais</div>
+  <div class="row">
+    <div class="col2">
+      <div class="card">
+        <div class="ct">Identidade do Técnico</div>
+        <label class="fl">Nome</label>
+        <input class="fi" id="cfgNm" value="Antonio Oliveira"/>
+        <label class="fl">Empresa</label>
+        <input class="fi" id="cfgEmp" value="MicroFast Informática"/>
+        <label class="fl">Telefone</label>
+        <input class="fi" id="cfgFone" value="(013) 97826-4067"/>
+        <button class="btn bp" onclick="saveCfg()">💾 SALVAR</button>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="card">
+        <div class="ct">Redefinir Senhas</div>
+        <label class="fl">Nova senha técnico</label>
+        <input class="fi" type="password" id="np1" placeholder="Mínimo 6 caracteres"/>
+        <label class="fl">Confirmar senha</label>
+        <input class="fi" type="password" id="np2"/>
+        <label class="fl">Senha ADM SGS</label>
+        <input class="fi" type="password" id="nps"/>
+        <button class="btn bp" onclick="saveCreds()">🔑 SALVAR SENHAS</button>
+        <button class="btn bd" onclick="execResetSenha()" style="margin-left:0">🔓 RESETAR ACESSO</button>
+        <div id="cfgMsg" style="font-size:14px;color:#00ff88;margin-top:6px;min-height:18px"></div>
+        <div style="font-size:13px;color:#4a7a9b;margin-top:8px">Salvo como hash em config\dados.ini (HTA) ou localStorage (browser). Nunca em texto puro.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HARDWARE AO VIVO -->
+<div class="pg" id="pg-hardware">
+  <div class="ptit">🖥️ Hardware <span>Ao Vivo</span></div>
+  <div class="pdesc">Monitoramento em tempo real via WMI — atualiza a cada 3 segundos</div>
+  <div class="row mb14" id="hwCards">
+    <div class="col4"><div class="stat"><div class="sl">CPU Uso</div><div class="sv" id="hwCpu">—</div></div></div>
+    <div class="col4"><div class="stat"><div class="sl">RAM Uso</div><div class="sv" id="hwRam">—</div></div></div>
+    <div class="col4"><div class="stat"><div class="sl">Disco C: Livre</div><div class="sv" id="hwDisk">—</div></div></div>
+    <div class="col4"><div class="stat"><div class="sl">Bateria</div><div class="sv" id="hwBat">—</div></div></div>
+  </div>
+  <div class="row mb14">
+    <div class="col2">
+      <div class="card">
+        <div class="ct">Processador</div>
+        <div id="hwCpuDetail" style="font-size:13px;color:#8ab4d4;line-height:2">Carregando...</div>
+        <div style="margin-top:.75rem">
+          <div style="display:-ms-flexbox;display:flex;-ms-flex-pack:justify;justify-content:space-between;font-size:11px;color:#4a7a9b;margin-bottom:3px"><span>Carga CPU</span><span id="hwCpuPct">0%</span></div>
+          <div class="pw"><div class="pb" id="hwCpuBar" style="width:0%;background:#00e5ff"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="card">
+        <div class="ct">Memória RAM</div>
+        <div id="hwRamDetail" style="font-size:13px;color:#8ab4d4;line-height:2">Carregando...</div>
+        <div style="margin-top:.75rem">
+          <div style="display:-ms-flexbox;display:flex;-ms-flex-pack:justify;justify-content:space-between;font-size:11px;color:#4a7a9b;margin-bottom:3px"><span>Uso RAM</span><span id="hwRamPct">0%</span></div>
+          <div class="pw"><div class="pb" id="hwRamBar" style="width:0%;background:#00c853"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mb14">
+    <div class="col2">
+      <div class="card">
+        <div class="ct">Discos</div>
+        <div id="hwDiskDetail" style="font-size:13px;color:#8ab4d4;line-height:2">Carregando...</div>
+      </div>
+    </div>
+    <div class="col2">
+      <div class="card">
+        <div class="ct">Sistema &amp; Rede</div>
+        <div id="hwSysDetail" style="font-size:13px;color:#8ab4d4;line-height:2">Carregando...</div>
+      </div>
+    </div>
+  </div>
+  <div style="font-size:11px;color:#4a7a9b;margin-top:.5rem">
+    <span class="dot dg" style="display:inline-block"></span> Atualização automática a cada 3s — apenas no modo HTA
+  </div>
+</div>
+
+<!-- HISTÓRICO -->
+<div class="pg" id="pg-historico">
+  <div class="ptit">📊 Histórico de <span>Atendimentos</span></div>
+  <div class="pdesc">Registro de todas as ações executadas — salvo em relatorios\historico.csv</div>
+  <div class="row mb14">
+    <div class="col4"><div class="stat"><div class="sl">Total registros</div><div class="sv" id="hTot">—</div></div></div>
+    <div class="col4"><div class="stat"><div class="sl">Esta sessão</div><div class="sv" id="hSes">0</div></div></div>
+    <div class="col4"><div class="stat"><div class="sl">Último atendimento</div><div class="sv" style="font-size:14px;padding-top:6px" id="hUlt">—</div></div></div>
+    <div class="col4"><div class="stat"><div class="sl">Último PC</div><div class="sv" style="font-size:14px;padding-top:6px" id="hPc">—</div></div></div>
+  </div>
+  <div style="margin-bottom:.875rem;display:-ms-flexbox;display:flex;gap:8px">
+    <button class="btn bp" onclick="carregarHistorico()">🔄 Atualizar</button>
+    <button class="btn bo" onclick="execHistoricoPS()">📋 Abrir no PowerShell</button>
+    <button class="btn bo" onclick="execExportarHistorico()">💾 Exportar CSV</button>
+  </div>
+  <div class="card">
+    <div class="ct">Últimos 50 atendimentos</div>
+    <div id="histTable" style="font-size:12px;color:#4a7a9b;padding:.5rem 0">Clique em Atualizar para carregar...</div>
+  </div>
+</div>
+
+</div><!-- /cnt -->
+</div><!-- /lay -->
+<div id="toasts"></div>
+
+<!-- ENGINE (JavaScript puro — compatível com IE=edge) -->
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script language="JavaScript">
+
+// ── FileSystem / Shell helpers ──────────────────────────
+var _fso = null, _shell = null, _sa = null;
+function fso()   { if(!_fso)   _fso   = new ActiveXObject('Scripting.FileSystemObject'); return _fso; }
+function shell() { if(!_shell) _shell = new ActiveXObject('WScript.Shell'); return _shell; }
+function sa()    { if(!_sa)    _sa    = new ActiveXObject('Shell.Application'); return _sa; }
+
+// ── GetBase — detecta pasta raiz do pendrive ────────────
+function GetBase() {
+    try {
+        var p = decodeURIComponent(document.location.pathname);
+        p = p.replace(/\//g, '\\');
+        while (p.charAt(0) === '\\') p = p.substring(1);
+        if (p.indexOf(':') < 0) return 'D:\\Pendrive Tecnico MF';
+        var base = p.substring(0, p.lastIndexOf('\\'));
+        if (!fso().FolderExists(base)) return 'D:\\Pendrive Tecnico MF';
+        return base;
+    } catch(e) {
+        return 'D:\\Pendrive Tecnico MF';
+    }
+}
+
+// ── INI read/write ──────────────────────────────────────
+function ReadCfg(k) {
+    try {
+        var cfg = GetBase() + '\\config\\dados.ini';
+        if (!fso().FileExists(cfg)) return '';
+        var f = fso().OpenTextFile(cfg, 1, false, -1);
+        while (!f.AtEndOfStream) {
+            var line = f.ReadLine();
+            var idx = line.indexOf('=');
+            if (idx > 0 && line.substring(0,idx).replace(/^\s+|\s+$/g,'') === k) {
+                var val = line.substring(idx+1).replace(/^\s+|\s+$/g,'');
+                f.Close(); return val;
+            }
+        }
+        f.Close();
+    } catch(e) {}
+    return '';
+}
+
+function WriteCfg(k, v) {
+    try {
+        var base = GetBase();
+        var cfg = base + '\\config\\dados.ini';
+        if (!fso().FolderExists(base+'\\config')) fso().CreateFolder(base+'\\config');
+        var tmp = '', found = false;
+        if (fso().FileExists(cfg)) {
+            var f = fso().OpenTextFile(cfg, 1, false, -1);
+            while (!f.AtEndOfStream) {
+                var line = f.ReadLine();
+                var idx = line.indexOf('=');
+                if (idx > 0 && line.substring(0,idx).replace(/^\s+|\s+$/g,'') === k) {
+                    tmp += k + '=' + v + '\n'; found = true;
+                } else {
+                    tmp += line + '\n';
+                }
+            }
+            f.Close();
+        }
+        if (!found) tmp += k + '=' + v + '\n';
+        var out = fso().OpenTextFile(cfg, 2, true, -1);
+        out.Write(tmp);
+        out.Close();
+    } catch(e) {}
+}
+
+// ── ReadFile ────────────────────────────────────────────
+function ReadFile(fp) {
+    try {
+        if (!fso().FileExists(fp)) return '';
+        var f = fso().OpenTextFile(fp, 1, false, -1);
+        var txt = f.ReadAll();
+        f.Close();
+        return txt;
+    } catch(e) { return ''; }
+}
+
+// ── ListRelatorios ──────────────────────────────────────
+function ListRelatorios() {
+    try {
+        var base = GetBase();
+        var rDir = base + '\\relatorios';
+        if (!fso().FolderExists(rDir)) { fso().CreateFolder(rDir); return ''; }
+        var folder = fso().GetFolder(rDir);
+        var files = new Enumerator(folder.Files);
+        var arr = [];
+        for (; !files.atEnd(); files.moveNext()) {
+            var fi = files.item();
+            var nm = fi.Name.toLowerCase();
+            if (nm.slice(-4)==='.txt' || nm.slice(-5)==='.html') {
+                arr.push(fi.Name + '|' + fi.Path + '|' + fi.DateLastModified);
+            }
+        }
+        arr.sort(function(a,b){ return b.localeCompare(a); });
+        return arr.join('\n');
+    } catch(e) { return ''; }
+}
+
+// ── Sanitiza inputs para evitar quebra de comandos PS ────
+function san(s) {
+    if (!s) return '';
+    // Remove apenas caracteres que quebram o arquivo INI de params
+    return String(s).replace(/["\r\n]/g,'').replace(/'/g,'\u2019').substring(0,120);
+}
+
+// ── Executar scripts via cmd /k (mantém janela aberta) ─────
+function RunPS1Admin(script, args) {
+    try {
+        var psCmd = 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' + script + '"';
+        if (args) psCmd += ' ' + args;
+        sa().ShellExecute('cmd.exe', '/k ' + psCmd, '', 'runas', 1);
+    } catch(e) {
+        var msg = e.message || String(e);
+        if (msg.indexOf('1260') >= 0 || msg.indexOf('bloqueado') >= 0 || msg.indexOf('blocked') >= 0) {
+            alert('ANTIVÍRUS BLOQUEOU O SCRIPT\n\nExecute SETUP-DEFENDER.bat como Admin.');
+        } else {
+            alert('Erro ao executar:\n' + msg);
+        }
+    }
+}
+
+function RunBatAdmin(script) {
+    try {
+        sa().ShellExecute('cmd.exe', '/k "' + script + '"', '', 'runas', 1);
+    } catch(e) { alert('Erro: ' + e.message); }
+}
+
+function RunPS1(script, args) {
+    try {
+        var psCmd = 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' + script + '"';
+        if (args) psCmd += ' ' + args;
+        sa().ShellExecute('cmd.exe', '/k ' + psCmd, '', '', 1);
+    } catch(e) { alert('Erro: ' + e.message); }
+}
+
+function OpenDir(d) {
+    try { sa().ShellExecute('explorer.exe', '"' + d + '"', '', '', 1); } catch(e) {}
+}
+
+function OpenURL(url) {
+    try { sa().ShellExecute(url, '', '', '', 1); } catch(e) {}
+}
+
+// ── Ações específicas ───────────────────────────────────
+function VBS_Diag(cli, ctx, obs, nm) {
+    var b = GetBase();
+    // Salva parâmetros em arquivo temporário para evitar
+    // qualquer problema de quoting/escaping no ShellExecute
+    var paramFile = b + '\\config\\diag_params.ini';
+    var outPath   = b + '\\relatorios';
+    try {
+        var content = 'ClienteNome=' + san(cli) + '\n' +
+                      'Contexto='    + san(ctx) + '\n' +
+                      'Observacoes=' + san(obs) + '\n' +
+                      'TecnicoNome=' + san(nm)  + '\n' +
+                      'OutputPath='  + outPath  + '\n';
+        var f = fso().OpenTextFile(paramFile, 2, true, -1);
+        f.Write(content);
+        f.Close();
+    } catch(e) {}
+    // Passa apenas o arquivo de params — sem aspas problemáticas
+    RunPS1Admin(b + '\\scripts\\diagnostico.ps1',
+        '-ParamFile "' + paramFile + '"');
+}
+
+function VBS_Limpeza() { RunBatAdmin(GetBase() + '\\scripts\\limpeza.bat'); }
+
+function VBS_Rede(op) { RunPS1Admin(GetBase() + '\\scripts\\rede.ps1', '-Acao ' + op); }
+
+function VBS_Drivers(a) { RunPS1Admin(GetBase() + '\\scripts\\drivers.ps1', '-Acao ' + a); }
+
+function VBS_Instalar(pkg, nm) {
+    var b = GetBase();
+    try {
+        sa().ShellExecute('cmd.exe',
+            '/k "' + b + '\\scripts\\instalar.bat" "' + pkg + '" "' + nm + '"',
+            '', 'runas', 1);
+    } catch(e) { alert('Erro: ' + e.message); }
+}
+
+function VBS_WU(a) { RunPS1Admin(GetBase() + '\\scripts\\windows-update.ps1', '-Acao ' + a); }
+
+function VBS_Tool(t) { RunPS1(GetBase() + '\\scripts\\abrir-ferramenta.ps1', '-Ferramenta ' + t); }
+
+function VBS_Admin(t) { RunBatAdmin(GetBase() + '\\scripts\\runas-admin.bat ' + t); }
+
+function VBS_GitHub(a, repo, branch, tok) {
+    var args = '-Acao ' + a + ' -Repo "' + repo + '" -Branch "' + branch + '"';
+    if (tok) args += ' -Token "' + tok + '"';
+    RunPS1Admin(GetBase() + '\\scripts\\atualizar-github.ps1', args);
+}
+
+function VBS_BaixarTools() { RunPS1Admin(GetBase() + '\\scripts\\baixar-ferramentas.ps1', ''); }
+
+function VBS_AbrirRelats() { OpenDir(GetBase() + '\\relatorios'); }
+
+function VBS_Pnputil() {
+    try { sa().ShellExecute('pnputil.exe', '/scan-devices', '', 'runas', 1); } catch(e) {}
+}
+
+function VBS_CleanBrowser() {
+    try {
+        sa().ShellExecute('cmd.exe',
+            '/k powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Remove-Item -Recurse -Force -EA SilentlyContinue \"$env:LOCALAPPDATA\\Google\\Chrome\\User Data\\Default\\Cache\",\"$env:LOCALAPPDATA\\Microsoft\\Edge\\User Data\\Default\\Cache\"; Write-Host Cache_limpo; Start-Sleep 2"',
+            '', 'runas', 1);
+    } catch(e) {}
+}
+
+function VBS_CleanLogs() {
+    try {
+        sa().ShellExecute('cmd.exe',
+            '/k powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Get-EventLog -LogName * | ForEach-Object { Clear-EventLog -LogName $_.Log -EA SilentlyContinue }; Write-Host Logs_limpos; Start-Sleep 2"',
+            '', 'runas', 1);
+    } catch(e) {}
+}
+
+// ── Detecção de ambiente ────────────────────────────────
+var IS_HTA = false;
+try {
+    new ActiveXObject('Scripting.FileSystemObject');
+    IS_HTA = true;
+} catch(e) { IS_HTA = false; }
+
+// Storage (HTA = arquivo INI; Browser = localStorage)
+var Store = {
+    get: function(k) {
+        if (IS_HTA) { try { var v = ReadCfg(k); return v || null; } catch(e) { return null; } }
+        else { try { return localStorage.getItem('mf_' + k); } catch(e) { return null; } }
+    },
+    set: function(k, v) {
+        if (IS_HTA) { try { WriteCfg(k, v); } catch(e) {} }
+        else { try { localStorage.setItem('mf_' + k, v); } catch(e) {} }
+    }
+};
+
+var APP = { auth:false, mode:'P', sgs:false, cnt:0, diag:0 };
+var authTab = 'P';
+
+// Relógio
+function tick() { document.getElementById('clk').innerText = new Date().toTimeString().slice(0,8); }
+setInterval(tick, 1000); tick();
+
+// Hash
+function hs(s) { var h=0; for(var i=0;i<s.length;i++){ h=((h<<5)-h+s.charCodeAt(i))|0; } return 'mf'+Math.abs(h).toString(36)+s.length.toString(36); }
+
+// Modo online/offline
+function checkMode() {
+    var on = navigator.onLine;
+    var m = document.getElementById('hmode');
+    if (on) { m.className='hmode online'; m.innerText='ONLINE'; } else { m.className='hmode offline'; m.innerText='OFFLINE'; }
+    var e = document.getElementById('sEnv'); if(e) e.innerText = IS_HTA ? 'HTA' : 'Browser';
+    var am = document.getElementById('amode'); if(am) am.innerText = IS_HTA ? '● Modo HTA — execução real de scripts' : '● Modo navegador — demonstração visual';
+}
+checkMode();
+if (window.addEventListener) { window.addEventListener('online', checkMode); window.addEventListener('offline', checkMode); }
+
+// Auth
+function setTab(t) {
+    authTab = t;
+    document.getElementById('tabP').className = 'atab' + (t==='P'?' on':'');
+    document.getElementById('tabC').className = 'atab' + (t==='C'?' on':'');
+    document.getElementById('frmP').style.display = t==='P' ? 'block' : 'none';
+    document.getElementById('frmC').style.display = t==='C' ? 'block' : 'none';
+}
+
+function doAuth() {
+    var msg = document.getElementById('amsg'); msg.innerText = '';
+    if (authTab === 'P') {
+        var p = document.getElementById('tpwd').value;
+        if (!p) { msg.innerText = 'Digite a senha'; return; }
+        var st = Store.get('th'), hv = hs(p);
+        if (!st) { if(p.length<6){ msg.innerText='Mínimo 6 caracteres'; return; } Store.set('th',hv); loginOk('P'); }
+        else { if(hv===st) loginOk('P'); else msg.innerText='Senha incorreta'; }
+    } else {
+        var p2 = document.getElementById('cpwd').value;
+        if (!p2) { msg.innerText = 'Digite a senha SGS'; return; }
+        var st2 = Store.get('ch'), hv2 = hs(p2);
+        if (!st2) { if(p2.length<6){ msg.innerText='Mínimo 6 caracteres'; return; } Store.set('ch',hv2); loginOk('C'); }
+        else { if(hv2===st2) loginOk('C'); else msg.innerText='Senha incorreta'; }
+    }
+}
+
+function loginOk(m) {
+    APP.auth=true; APP.mode=m; APP.sgs=(m==='C');
+    document.getElementById('authOv').style.display='none';
+    document.getElementById('hbadge').innerText = m==='C' ? 'ADM · SGS' : 'TÉCNICO';
+    document.getElementById('sModo').innerText = m==='C' ? 'Corp SGS' : 'Técnico';
+    if (m==='C') { document.getElementById('sgsLbl').innerText='Autenticado: antonio.oliveira.adm@sgs.com'; document.getElementById('sgsDot').className='dot dg'; }
+    toast('Acesso autorizado!','ok');
+    log('dTerm','ok','Sessão iniciada — modo '+(m==='C'?'CORPORATIVO SGS':'TÉCNICO'));
+    log('dTerm','info','Ambiente: '+(IS_HTA?'HTA — scripts reais ativos':'Navegador — modo demonstração'));
+    carregarRelats();
+}
+
+function logout() {
+    if(!window.confirm('Encerrar sessão?'))return;
+    APP.auth=false; APP.sgs=false;
+    document.getElementById('authOv').style.display='flex';
+    document.getElementById('tpwd').value='';
+    document.getElementById('cpwd').value='';
+    var sp=document.getElementById('sgsPwd'); if(sp) sp.value='';
+    var sd=document.getElementById('sgsDot'); if(sd) sd.className='dot da';
+    var sl=document.getElementById('sgsLbl'); if(sl) sl.innerText='Não autenticado';
+}
+
+function authSGS() {
+    var p=document.getElementById('sgsPwd').value; if(!p){toast('Digite a senha','er');return;}
+    var st=Store.get('ch'), hv=hs(p);
+    if(!st){Store.set('ch',hv);APP.sgs=true;}
+    else if(hv===st){APP.sgs=true;}
+    else{toast('Senha SGS incorreta','er');log('adminT','err','Falha SGS');return;}
+    document.getElementById('sgsLbl').innerText='Autenticado: antonio.oliveira.adm@sgs.com';
+    document.getElementById('sgsDot').className='dot dg';
+    toast('Autenticado na SGS!','ok'); log('adminT','ok','Sessão SGS ativa');
+}
+
+// Navegação
+function pg(id) {
+    var ps=document.querySelectorAll('.pg'); for(var i=0;i<ps.length;i++) ps[i].className='pg';
+    var el=document.getElementById('pg-'+id); if(el) el.className='pg on';
+    var ns=document.querySelectorAll('.ni'); for(var i=0;i<ns.length;i++){ var oc=ns[i].getAttribute('onclick')||''; ns[i].className='ni'+(oc.indexOf("'"+id+"'")>=0?' on':''); }
+    if(id==='relat') carregarRelats();
+    pgHook(id);
+}
+
+// Log
+function log(tid,type,msg) {
+    var t=document.getElementById(tid); if(!t)return;
+    var ts=new Date().toTimeString().slice(0,8);
+    var cls={ok:'tok',err:'te',warn:'tw',info:'ti',dim:'tdm'}[type]||'ti';
+    var ic={ok:'[OK]',err:'[X]',warn:'[!]',info:'[i]',dim:''}[type]||'[>]';
+    var ln=document.createElement('div'); ln.className='tl';
+    ln.innerHTML='<span class="tcp">['+ts+']</span> <span class="'+cls+'">'+ic+' '+msg+'</span>';
+    t.appendChild(ln); t.scrollTop=t.scrollHeight;
+}
+
+// Toast
+function toast(msg,type) {
+    type=type||'inf'; var c=document.getElementById('toasts');
+    var t=document.createElement('div'); t.className='toast '+type;
+    var ic={ok:'✓',er:'✕',inf:'ℹ'};
+    t.innerHTML='<span style="font-weight:700;margin-right:7px;color:'+(type==='ok'?'#00ff88':type==='er'?'#ff1744':'#00e5ff')+'">'+(ic[type]||'•')+'</span>'+msg;
+    c.appendChild(t);
+    window.setTimeout(function(){t.style.opacity='0'; window.setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t);},300);},3500);
+}
+
+function cnt() { APP.cnt++; document.getElementById('sCnt').innerText=APP.cnt; }
+
+// Diagnóstico
+function execDiag() {
+    var cli=document.getElementById('dCli').value||'Cliente';
+    var ctx=document.getElementById('dCtx').value;
+    var obs=document.getElementById('dObs').value||'-';
+    var nm=Store.get('nm')||'Antonio Oliveira';
+    document.getElementById('dprog').style.display='block';
+    APP.diag++; document.getElementById('sDiag').innerText=APP.diag; cnt();
+    var steps=[[0,100],[15,800],[30,1600],[50,2400],[65,3200],[78,4000],[90,4800],[100,5600]];
+    var msgs=['Iniciando...','SO, usuário, domínio...','CPU, RAM, slots...','SMART dos discos...','GPU, rede, interfaces...','Windows Update...','Lista de programas...','Score calculado — relatório pronto!'];
+    steps.forEach(function(s,i){window.setTimeout(function(){document.getElementById('dpb').style.width=s[0]+'%';document.getElementById('dpct').innerText=s[0]+'%';document.getElementById('dstep').innerText=msgs[i];if(s[0]>0)log('diagT','info',msgs[i]);},s[1]);});
+    if(IS_HTA){window.setTimeout(function(){VBS_Diag(cli,ctx,obs,nm);},300);window.setTimeout(function(){toast('Diagnóstico iniciado! Veja o PowerShell.','ok');carregarRelats();registrarHistorico('Diagnóstico',cli,'Executado — aguarde relatório');},5800);}
+    else{window.setTimeout(function(){toast('Modo browser — abra INDEX.hta para execução real','inf');},5800);}
+}
+
+function execAbrirRelats() { if(IS_HTA)VBS_AbrirRelats(); else toast('Abra o Explorer em relatorios\\','inf'); }
+
+// Limpeza
+function execLimpeza() {
+    cnt(); log('cleanT','info','Executando limpeza.bat como Admin...');
+    if(IS_HTA){VBS_Limpeza();document.getElementById('cleanRes').innerHTML='<span style="color:#00ff88">Script em execução — veja a janela CMD</span><br><span style="font-size:11px;color:#4a7a9b">'+new Date().toLocaleString('pt-BR')+'</span>';toast('Limpeza iniciada! Confirme o UAC.','ok');registrarHistorico('Limpeza',window.location.hostname||'PC','Executada');}
+    else toast('Abra INDEX.hta','inf');
+}
+function execCleanBrowser(){cnt();if(IS_HTA){VBS_CleanBrowser();toast('Cache de navegadores limpo!','ok');}else toast('Abra INDEX.hta','inf');}
+function execCleanLogs(){cnt();if(IS_HTA){VBS_CleanLogs();toast('Event logs limpos!','ok');}else toast('Abra INDEX.hta','inf');}
+
+// Relatórios
+function carregarRelats() {
+    var el=document.getElementById('relatList'), nb=document.getElementById('nRelat');
+    if(!IS_HTA){el.innerHTML='<span style="color:#4a7a9b">Disponível apenas no HTA.</span>';nb.innerText='—';return;}
+    try {
+        var lista=ListRelatorios();
+        if(!lista||lista.trim()===''){el.innerHTML='<span style="color:#4a7a9b">Nenhum relatório em relatorios\\ ainda.</span>';nb.innerText='0';return;}
+        var itens=lista.split('\n').filter(function(x){return x.trim()!=='';});
+        nb.innerText=itens.length;
+        var html='<table class="tbl"><thead><tr><th>Arquivo</th><th>Data</th><th></th></tr></thead><tbody>';
+        itens.forEach(function(item){
+            var p=item.split('|'); if(p.length<3)return;
+            var nome=p[0],cam=p[1],data=p[2];
+            var cor=nome.indexOf('bateria')>=0?'#ffab00':(nome.indexOf('diagnostico')>=0?'#00e5ff':'#8ab4d4');
+            html+='<tr><td class="mono" style="color:'+cor+'">'+nome+'</td><td class="mono">'+data+'</td><td style="white-space:nowrap">';
+            if(nome.slice(-4)==='.txt') html+='<button class="btn bo" style="font-size:10px;padding:3px 8px;margin-right:4px" onclick="verRelat(\''+cam.replace(/\\/g,'\\\\')+'\')" >👁</button>';
+            html+='<button class="btn bo" style="font-size:10px;padding:3px 8px" onclick="abrirArq(\''+cam.replace(/\\/g,'\\\\')+'\')" >📂</button>';
+            html+='</td></tr>';
+        });
+        html+='</tbody></table>';
+        el.innerHTML=html;
+    }catch(e){el.innerHTML='<span style="color:#ff1744">Erro: '+e.message+'</span>';}
+}
+
+function verRelat(cam) {
+    if(!IS_HTA)return;
+    var c=ReadFile(cam); if(!c){toast('Erro ao ler arquivo','er');return;}
+    var rv=document.getElementById('relatViewer'), html='';
+    c.split('\n').forEach(function(l){
+        var lt=l.trim(), cl='';
+        if(lt.indexOf('===')>=0||lt.indexOf('---')>=0) cl='color:#00e5ff;font-weight:bold';
+        else if(lt.indexOf('[v]')>=0||lt.indexOf('EXCELENTE')>=0||lt.indexOf('NAO - HARDWARE')>=0) cl='color:#00ff88';
+        else if(lt.indexOf('[!]')>=0||lt.indexOf('ATENCAO')>=0||lt.indexOf('SIM - UPGRADE')>=0) cl='color:#ffab00';
+        html+='<div class="tl" style="white-space:pre;'+cl+'">'+l.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</div>';
+    });
+    rv.innerHTML=html; pg('relat');
+}
+
+function abrirArq(cam) { if(!IS_HTA)return; try{var sh=new ActiveXObject('WScript.Shell');sh.Run('"'+cam+'"',1,false);}catch(e){toast('Erro','er');} }
+
+function execSetupDefender(){
+    cnt();
+    log('dTerm','warn','Executando SETUP-DEFENDER.bat como Admin...');
+    if(IS_HTA){
+        var b=GetBase();
+        try{
+            sa().ShellExecute('cmd.exe',
+                '/k powershell.exe -NoProfile -ExecutionPolicy Bypass -File "'+b+'\\scripts\\setup-exclusao.ps1"',
+                '','runas',1);
+            toast('Setup do Defender iniciado! Confirme o UAC.','ok');
+        }catch(e){ alert('Execute manualmente: SETUP-DEFENDER.bat (clique direito → Admin)'); }
+    } else { toast('Abra INDEX.hta no pendrive','inf'); }
+}
+
+// Rede
+var redeN={'1':'Ping Avançado','2':'Traceroute','3':'Diagnóstico DNS','4':'Info Interfaces','5':'Teste Velocidade','6':'Scan Portas','7':'Monitorar Rede','8':'Teste Completo','9':'Renovar IP'};
+function execRede(op){cnt();log('redeT','info','Executando: '+redeN[op]);if(IS_HTA){VBS_Rede(op);toast(redeN[op]+' iniciado!','inf');}else toast('Abra INDEX.hta','inf');}
+
+// Drivers
+function execDrivers(a){cnt();log('driverT','info','drivers.ps1 -Acao '+a);if(IS_HTA){VBS_Drivers(a);toast('Drivers iniciado!','inf');}else toast('Abra INDEX.hta','inf');}
+function execPnputil(){cnt();log('driverT','info','pnputil /scan-devices');if(IS_HTA){VBS_Pnputil();toast('pnputil executado!','inf');}else toast('Abra INDEX.hta','inf');}
+
+// Programas
+function instR(id,nm){document.getElementById('pkgId').value=id;document.getElementById('pkgNm').value=nm;pg('progs');}
+function execInstalar(){
+    if(!APP.sgs&&!window.confirm('Requer SGS. Continuar?'))return;
+    var pkg=document.getElementById('pkgId').value, nm=document.getElementById('pkgNm').value||pkg;
+    if(!pkg){toast('Informe o pacote','er');return;}
+    cnt();log('pkgT','info','winget install --id '+pkg+' --silent');
+    if(IS_HTA){VBS_Instalar(pkg,nm);toast('Instalação iniciada!','inf');}else toast('Abra INDEX.hta','inf');
+}
+
+// Windows Update
+function execWU(a){cnt();log('wuT','info','windows-update.ps1 -Acao '+a);if(IS_HTA){VBS_WU(a);toast('WU iniciado!','inf');}else toast('Abra INDEX.hta','inf');}
+
+// Ferramentas
+function execTool(t){cnt();log('toolT','info','Abrindo: '+t);if(IS_HTA){VBS_Tool(t);toast('Abrindo '+t+'...','inf');}else toast('Abra INDEX.hta','inf');}
+function execBaixarTools(){cnt();log('dTerm','info','baixar-ferramentas.ps1...');if(IS_HTA){VBS_BaixarTools();toast('Downloader aberto!','ok');}else toast('Abra INDEX.hta','inf');}
+
+// Admin
+function execAdmin(t){if(!APP.sgs&&t!=='cmd'&&t!=='powershell'){toast('Autentique na SGS!','er');return;}cnt();log('adminT','info','Abrindo '+t+' como Admin');if(IS_HTA){VBS_Admin(t);toast(t.toUpperCase()+' aberto','ok');}else toast('Abra INDEX.hta','inf');}
+
+// GitHub
+function execGitCheck(){cnt();log('gitT','info','Verificando GitHub...');if(IS_HTA){VBS_GitHub('verificar',document.getElementById('ghRepo').value,document.getElementById('ghBranch').value,document.getElementById('ghTok').value);toast('Verificação iniciada!','inf');}else toast('Abra INDEX.hta','inf');}
+function execGitPull(){cnt();log('gitT','info','Baixando...');if(IS_HTA){VBS_GitHub('atualizar',document.getElementById('ghRepo').value,document.getElementById('ghBranch').value,document.getElementById('ghTok').value);document.getElementById('ghLast').value=new Date().toLocaleString('pt-BR');toast('Sync iniciado!','ok');}else toast('Abra INDEX.hta','inf');}
+function abrirURL(url){if(IS_HTA){try{OpenURL(url);}catch(e){try{VBS_OpenURL(url);}catch(e2){}}}else window.open(url,'_blank');}
+
+// Guias
+var guiaDB={
+    diag:'<div class="gstep"><span class="gsn">1</span><span class="gst">Preencha os dados do atendimento</span><div class="gsd">Informe nome do cliente, contexto (SGS/MicroFast) e observações. Aparecem no cabeçalho do relatório.</div></div><div class="gstep"><span class="gsn">2</span><span class="gst">Clique em Executar Diagnóstico</span><div class="gsd">O Windows pedirá UAC. Clique em Sim. Uma janela PowerShell azul coletará os dados em tempo real.</div></div><div class="gstep"><span class="gsn">3</span><span class="gst">Aguarde 30s a 2 minutos</span><div class="gsd">Coleta: SO, build, usuário/domínio, CPU, RAM (slots/velocidade), disco (SMART), GPU, rede, Windows Update e programas instalados.</div></div><div class="gstep"><span class="gsn">4</span><span class="gst">Relatório abre automaticamente</span><div class="gsd">Bloco de Notas abre com .TXT em relatorios\\. Em notebooks, pergunta se quer relatório de bateria (powercfg /batteryreport).</div></div><div class="gstep"><span class="gsn">5</span><span class="gst">Score de Upgrade A–F</span><div class="gsd">Score 0–75 baseado em RAM, tipo de disco (SSD/HDD) e geração do CPU. Alertas críticos em laranja.</div><span class="gsc">Nota A (70+): excelente | B: bom | C: adequado | D/F: upgrade necessário</span></div>',
+    clean:'<div class="gstep"><span class="gsn">1</span><span class="gst">Clique em Executar Limpeza Real</span><div class="gsd">O Windows pedirá UAC. Clique em Sim. CMD preta mostra cada etapa.</div></div><div class="gstep"><span class="gsn">2</span><span class="gst">O que é removido</span><div class="gsd">%TEMP%, C:\\Windows\\Temp, Prefetch, Lixeira, cache do Windows Update e cache DNS.</div><span class="gsc">Liberação típica: 500MB a 5GB</span></div><div class="gstep"><span class="gsn">3</span><span class="gst">Limpeza extra de navegadores</span><div class="gsd">Use os botões extras para cache do Chrome, Edge e Firefox.</div></div><div class="gstep"><span class="gsn">4</span><span class="gst">Quando usar</span><div class="gsd">Execute sempre antes de diagnósticos para garantir leituras precisas de espaço. Passo 1 de qualquer atendimento.</div></div>',
+    rede:'<div class="gstep"><span class="gsn">1</span><span class="gst">Menu interativo no PowerShell</span><div class="gsd">Qualquer botão de rede abre uma janela PS com menu numerado. Digite o número e Enter.</div></div><div class="gstep"><span class="gsn">2</span><span class="gst">Ping Avançado [1]</span><div class="gsd">10 pings com: enviados/recebidos, perda%, mín/máx/média. Perda > 10% = instabilidade.</div></div><div class="gstep"><span class="gsn">3</span><span class="gst">Traceroute [2]</span><div class="gsd">Mostra cada roteador (hop) até o destino. Identifica onde a conexão está lenta.</div></div><div class="gstep"><span class="gsn">4</span><span class="gst">Renovar IP [9]</span><div class="gsd">ipconfig /release + /renew. Resolve IP 169.254.x.x (APIPA), conflito de IP e sem conectividade.</div></div>',
+    hwinfo:'<div class="gstep"><span class="gsn">1</span><span class="gst">Baixe a versão Portable</span><div class="gsd">hwinfo.com → baixe o pacote Portable 64-bit → extraia para tools\\HWiNFO64\\HWiNFO64.exe no pendrive.</div></div><div class="gstep"><span class="gsn">2</span><span class="gst">Abra pelo painel</span><div class="gsd">Ferramentas → HWiNFO64. Se ausente, oferece instalar via winget.</div></div><div class="gstep"><span class="gsn">3</span><span class="gst">Temperaturas críticas</span><div class="gsd">CPU Package > 90°C = superaquecimento. GPU > 90°C = problema de ventilação. NVMe > 70°C = alerta.</div></div><div class="gstep"><span class="gsn">4</span><span class="gst">Logging de sensores</span><div class="gsd">Botão direito → Start Logging. Grava CSV de temperaturas. Ideal para diagnosticar throttling.</div></div>',
+    cdisk:'<div class="gstep"><span class="gsn">1</span><span class="gst">CrystalDiskInfo — status SMART</span><div class="gsd">Sem instalação. Mostra saúde de cada disco físico.</div></div><div class="gstep"><span class="gsn">2</span><span class="gst">Interpretando status</span><div class="gsd">Bom (azul): saudável. Atenção (amarelo): monitore. Ruim (vermelho): falha iminente — BACKUP URGENTE.</div></div><div class="gstep"><span class="gsn">3</span><span class="gst">Atributos críticos</span><div class="gsd">05 Reallocated Sectors, C5 Pending Sectors, C6 Uncorrectable. Qualquer valor ≠ 0 = problema sério.</div></div><div class="gstep"><span class="gsn">4</span><span class="gst">CrystalDiskMark — velocidade</span><div class="gsd">Clique em All. SSD NVMe Gen4 > 5000 MB/s. SSD SATA > 400 MB/s. HDD > 100 MB/s.</div></div>',
+    malware:'<div class="gstep"><span class="gsn">1</span><span class="gst">Execute RKill primeiro</span><div class="gsd">Mata processos de malware ativos. Aguarde fechar sozinho.</div></div><div class="gstep"><span class="gsn">2</span><span class="gst">AdwCleaner</span><div class="gsd">Scan Now → Quarantine. Remove adware, toolbars e PUPs.</div></div><div class="gstep"><span class="gsn">3</span><span class="gst">Malwarebytes</span><div class="gsd">Scan → Threat Scan. 10–30 min. Remove malware, ransomware e rootkits.</div></div><div class="gstep"><span class="gsn">4</span><span class="gst">Autoruns (Segurança)</span><div class="gsd">Options → Scan Options → Check VirusTotal. Entradas suspeitas em vermelho.</div></div><div class="gstep"><span class="gsn">5</span><span class="gst">Reinicie e confirme</span><div class="gsd">Execute novo diagnóstico para confirmar sistema limpo.</div></div>',
+    drivers:'<div class="gstep"><span class="gsn">1</span><span class="gst">Detectar Hardware primeiro</span><div class="gsd">Identifica fabricante real via WMI e abre site correto: Dell, Lenovo, HP, Asus, Acer.</div></div><div class="gstep"><span class="gsn">2</span><span class="gst">Driver de Vídeo específico</span><div class="gsd">NVIDIA → GeForce.com. AMD → AMD.com/support. Intel → Intel Driver Assistant.</div></div><div class="gstep"><span class="gsn">3</span><span class="gst">pnputil para "!" no Gerenciador</span><div class="gsd">Força Windows reescanear todos os dispositivos Plug and Play.</div></div><div class="gstep"><span class="gsn">4</span><span class="gst">Evite ferramentas de terceiros</span><div class="gsd">Driver Booster, Driver Easy = drivers não homologados. Use pnputil + Windows Update + site do fabricante.</div></div>',
+    winupd:'<div class="gstep"><span class="gsn">1</span><span class="gst">Verificar antes de instalar</span><div class="gsd">Liste as pendências para mostrar ao cliente antes de prosseguir.</div></div><div class="gstep"><span class="gsn">2</span><span class="gst">Corporativo SGS: use Só Segurança</span><div class="gsd">Evita atualizações que quebram configurações gerenciadas pelo Intune.</div></div><div class="gstep"><span class="gsn">3</span><span class="gst">PSWindowsUpdate automático</span><div class="gsd">Instalado automaticamente na primeira execução. Requer internet.</div></div><div class="gstep"><span class="gsn">4</span><span class="gst">Defender independentemente</span><div class="gsd">Rápido (< 1 min), não requer reinício.</div></div>'
+};
+function guia(id) { var n={diag:'Diagnóstico',clean:'Limpeza',rede:'Rede',hwinfo:'HWiNFO64',cdisk:'CrystalDisk',malware:'Malware',drivers:'Drivers',winupd:'Win Update'}; if(guiaDB[id]) document.getElementById('guiaBox').innerHTML='<div class="stit">📖 '+n[id]+'</div>'+guiaDB[id]; }
+
+// ── V4.0 — Desinstalar ───────────────────────────────────
+function execDesinstalar() {
+    var nm = document.getElementById('desinstNm').value;
+    if (!nm) { toast('Informe o nome do programa','er'); return; }
+    cnt(); log('desinstT','info','Buscando: '+nm);
+    if (IS_HTA) {
+        RunPS1Admin(GetBase()+'\\scripts\\desinstalar.ps1', '-NomePrograma "'+san(nm)+'" -Acao remover');
+        toast('Desinstalador iniciado!','inf');
+        registrarHistorico('Desinstalar', nm, 'Iniciado');
+    } else toast('Abra INDEX.hta','inf');
+}
+function execDesinstalarMenu() {
+    cnt(); log('desinstT','info','Abrindo lista de programas...');
+    if (IS_HTA) {
+        RunPS1Admin(GetBase()+'\\scripts\\desinstalar.ps1', '-Acao listar');
+        toast('Lista aberta no PowerShell','inf');
+    } else toast('Abra INDEX.hta','inf');
+}
+
+// ── V4.0 — Histórico ─────────────────────────────────────
+var _sesAcoes = 0;
+function registrarHistorico(tipo, cliente, resultado) {
+    _sesAcoes++;
+    var el = document.getElementById('hSes'); if(el) el.innerText = _sesAcoes;
+    if (!IS_HTA) return;
+    try {
+        var nm = Store.get('nm') || 'Antonio Oliveira';
+        RunPS1(GetBase()+'\\scripts\\historico.ps1',
+            '-Acao registrar -TipoAcao "'+san(tipo)+'" -Cliente "'+san(cliente)+'" -Resultado "'+san(resultado)+'" -Tecnico "'+san(nm)+'"');
+    } catch(e) {}
+}
+function carregarHistorico() {
+    var el = document.getElementById('histTable');
+    var tot = document.getElementById('hTot');
+    var ult = document.getElementById('hUlt');
+    var hpc = document.getElementById('hPc');
+    if (!IS_HTA) { el.innerHTML='<span style="color:#4a7a9b">Disponível apenas no HTA.</span>'; return; }
+    try {
+        var csvPath = GetBase() + '\\relatorios\\historico.csv';
+        var c = ReadFile(csvPath);
+        if (!c || c.trim() === '') { el.innerHTML='<span style="color:#4a7a9b">Nenhum atendimento registrado ainda.</span>'; return; }
+        var linhas = c.split('\n').filter(function(l){ return l.trim() !== ''; });
+        var dados = linhas.slice(1); // pula header
+        if (tot) tot.innerText = dados.length;
+        // Últimos registros
+        var ultDados = dados.slice(-1)[0];
+        if (ultDados && ult) {
+            var p = ultDados.replace(/"/g,'').split(',');
+            if (p.length >= 4) { ult.innerText = (p[0]||'—').trim(); hpc.innerText = (p[4]||'—').trim(); }
+        }
+        // Tabela
+        var html = '<table class="tbl"><thead><tr><th>Data</th><th>Hora</th><th>Ação</th><th>Cliente</th><th>PC</th><th>Resultado</th></tr></thead><tbody>';
+        dados.slice(-50).reverse().forEach(function(ln) {
+            var c2 = ln.replace(/"/g,'').split(',');
+            if (c2.length < 6) return;
+            var cor = c2[5] && c2[5].indexOf('Nota A') >= 0 ? '#00c853' :
+                      c2[5] && c2[5].indexOf('Nota F') >= 0 ? '#ff1744' : '#8ab4d4';
+            html += '<tr><td class="mono">'+c2[0]+'</td><td class="mono">'+c2[1]+'</td>' +
+                    '<td>'+c2[2]+'</td><td>'+c2[3]+'</td><td class="mono">'+c2[4]+'</td>' +
+                    '<td style="color:'+cor+'">'+c2[5]+'</td></tr>';
+        });
+        html += '</tbody></table>';
+        el.innerHTML = html;
+    } catch(e) { el.innerHTML='<span style="color:#ff1744">Erro: '+e.message+'</span>'; }
+}
+function execHistoricoPS() {
+    cnt();
+    if (IS_HTA) { RunPS1Admin(GetBase()+'\\scripts\\historico.ps1','-Acao listar'); toast('Histórico aberto!','inf'); }
+    else toast('Abra INDEX.hta','inf');
+}
+function execExportarHistorico() {
+    cnt();
+    if (IS_HTA) { RunPS1(GetBase()+'\\scripts\\historico.ps1','-Acao exportar'); toast('Exportando CSV...','ok'); }
+    else toast('Abra INDEX.hta','inf');
+}
+
+// ── V4.0 — Reset senha ───────────────────────────────────
+function execResetSenha() {
+    if (!window.confirm('Isso vai apagar as senhas salvas.\nVocê precisará definir novas senhas no próximo acesso.\n\nConfirmar?')) return;
+    cnt();
+    if (IS_HTA) {
+        RunPS1Admin(GetBase()+'\\scripts\\reset-senha.ps1','');
+        toast('Script de reset aberto!','inf');
+    } else {
+        // No browser: limpa o localStorage
+        Store.set('th',''); Store.set('ch','');
+        toast('Senhas removidas — recarregue para definir novas','ok');
+    }
+}
+
+// ── V4.0 — Hardware ao vivo via WMI ──────────────────────
+var _hwInterval = null;
+function hwStart() {
+    if (!IS_HTA) {
+        // Modo browser: mostra valores simulados
+        document.getElementById('hwCpu').innerText = 'N/A';
+        document.getElementById('hwRam').innerText = 'N/A';
+        document.getElementById('hwDisk').innerText = 'N/A';
+        document.getElementById('hwBat').innerText = 'N/A';
+        document.getElementById('hwCpuDetail').innerHTML = '<span style="color:#4a7a9b">WMI disponível apenas no HTA</span>';
+        document.getElementById('hwRamDetail').innerHTML = '<span style="color:#4a7a9b">WMI disponível apenas no HTA</span>';
+        document.getElementById('hwDiskDetail').innerHTML = '<span style="color:#4a7a9b">WMI disponível apenas no HTA</span>';
+        document.getElementById('hwSysDetail').innerHTML = '<span style="color:#4a7a9b">WMI disponível apenas no HTA</span>';
+        return;
+    }
+    if (_hwInterval) return;
+    hwRead();
+    _hwInterval = setInterval(hwRead, 3000);
+}
+function hwStop() { if (_hwInterval) { clearInterval(_hwInterval); _hwInterval = null; } }
+function hwRead() {
+    try {
+        var wmi = GetObject('winmgmts:{impersonationLevel=impersonate}!//./root/cimv2');
+        // CPU
+        var cpuQ = new Enumerator(wmi.ExecQuery('SELECT Name,NumberOfCores,NumberOfLogicalProcessors,MaxClockSpeed,LoadPercentage FROM Win32_Processor'));
+        if (!cpuQ.atEnd()) {
+            var cpu = cpuQ.item();
+            var load = cpu.LoadPercentage || 0;
+            document.getElementById('hwCpu').innerText = load + '%';
+            document.getElementById('hwCpuPct').innerText = load + '%';
+            document.getElementById('hwCpuBar').style.width = load + '%';
+            document.getElementById('hwCpuBar').style.background = load > 80 ? '#ff1744' : load > 50 ? '#ffab00' : '#00e5ff';
+            document.getElementById('hwCpuDetail').innerHTML =
+                '<div class="row"><span class="lbl">Modelo</span><span class="val" style="font-size:11px">' + (cpu.Name||'').trim() + '</span></div>' +
+                '<div class="row"><span class="lbl">Núcleos</span><span class="val">' + cpu.NumberOfCores + ' / ' + cpu.NumberOfLogicalProcessors + ' threads</span></div>' +
+                '<div class="row"><span class="lbl">Clock</span><span class="val">' + cpu.MaxClockSpeed + ' MHz</span></div>';
+        }
+        // RAM
+        var osQ = new Enumerator(wmi.ExecQuery('SELECT TotalVisibleMemorySize,FreePhysicalMemory FROM Win32_OperatingSystem'));
+        if (!osQ.atEnd()) {
+            var osInfo = osQ.item();
+            var total = Math.round(osInfo.TotalVisibleMemorySize / 1048576 * 10) / 10;
+            var free  = Math.round(osInfo.FreePhysicalMemory  / 1048576 * 10) / 10;
+            var used  = Math.round((total - free) * 10) / 10;
+            var pct   = Math.round(used / total * 100);
+            document.getElementById('hwRam').innerText = used + ' GB';
+            document.getElementById('hwRamPct').innerText = pct + '%';
+            document.getElementById('hwRamBar').style.width = pct + '%';
+            document.getElementById('hwRamBar').style.background = pct > 85 ? '#ff1744' : pct > 65 ? '#ffab00' : '#00c853';
+            document.getElementById('hwRamDetail').innerHTML =
+                '<div class="row"><span class="lbl">Total</span><span class="val">' + total + ' GB</span></div>' +
+                '<div class="row"><span class="lbl">Em uso</span><span class="val">' + used + ' GB (' + pct + '%)</span></div>' +
+                '<div class="row"><span class="lbl">Disponível</span><span class="val">' + free + ' GB</span></div>';
+        }
+        // Discos
+        var dskQ = new Enumerator(wmi.ExecQuery("SELECT DeviceID,Size,FreeSpace FROM Win32_LogicalDisk WHERE DriveType=3"));
+        var dskHtml = ''; var diskFreeC = '—';
+        for (; !dskQ.atEnd(); dskQ.moveNext()) {
+            var d = dskQ.item();
+            var tot = Math.round(d.Size/1073741824*10)/10;
+            var liv = Math.round(d.FreeSpace/1073741824*10)/10;
+            var pctD = Math.round((tot-liv)/tot*100);
+            var cor  = pctD > 85 ? '#ff1744' : pctD > 70 ? '#ffab00' : '#00c853';
+            dskHtml += '<div class="row"><span class="lbl">' + d.DeviceID + '</span>' +
+                       '<span class="val" style="color:'+cor+'">'+liv+' GB livre / '+tot+' GB ('+pctD+'%)</span></div>';
+            if (d.DeviceID === 'C:') diskFreeC = liv + ' GB';
+        }
+        document.getElementById('hwDisk').innerText = diskFreeC;
+        document.getElementById('hwDiskDetail').innerHTML = dskHtml || '<span style="color:#4a7a9b">Sem dados</span>';
+        // Sistema
+        var compQ = new Enumerator(wmi.ExecQuery('SELECT CSName,Domain,UserName,TotalPhysicalMemory FROM Win32_ComputerSystem'));
+        var sysHtml = '';
+        if (!compQ.atEnd()) {
+            var comp = compQ.item();
+            sysHtml += '<div class="row"><span class="lbl">PC</span><span class="val">'+(comp.CSName||'')+'</span></div>' +
+                       '<div class="row"><span class="lbl">Domínio</span><span class="val">'+(comp.Domain||'')+'</span></div>' +
+                       '<div class="row"><span class="lbl">Usuário</span><span class="val">'+String(comp.UserName||'').split('\\').pop()+'</span></div>';
+        }
+        // Bateria
+        var batQ = new Enumerator(wmi.ExecQuery('SELECT EstimatedChargeRemaining,BatteryStatus FROM Win32_Battery'));
+        if (!batQ.atEnd()) {
+            var bat = batQ.item();
+            var carga = bat.EstimatedChargeRemaining || 0;
+            var batSt = bat.BatteryStatus;
+            var batCor = carga < 20 ? '#ff1744' : carga < 40 ? '#ffab00' : '#00c853';
+            document.getElementById('hwBat').innerHTML = '<span style="color:'+batCor+'">' + carga + '%</span>';
+            sysHtml += '<div class="row"><span class="lbl">Bateria</span><span class="val" style="color:'+batCor+'">'+carga+'% '+(batSt===2||batSt===6?'⚡':'')+'</span></div>';
+        } else {
+            document.getElementById('hwBat').innerText = 'N/A';
+        }
+        document.getElementById('hwSysDetail').innerHTML = sysHtml || '<span style="color:#4a7a9b">Sem dados</span>';
+    } catch(e) {
+        document.getElementById('hwCpuDetail').innerHTML = '<span style="color:#ff1744">Erro WMI: '+e.message+'</span>';
+        hwStop();
+    }
+}
+
+// ── Intercepta pg() para controlar Hardware live ─────────
+// NOTA: IE não permite pg = function(){} após function pg(){} - usar flag interna
+var _hwActivePage = '';
+function pgHook(id) {
+    if (_hwActivePage === 'hardware' && id !== 'hardware') { hwStop(); }
+    _hwActivePage = id;
+    if (id === 'hardware') { hwStart(); }
+    if (id === 'historico') { carregarHistorico(); }
+}
+
+// Config
+function saveCfg(){Store.set('nm',document.getElementById('cfgNm').value);Store.set('emp',document.getElementById('cfgEmp').value);Store.set('fone',document.getElementById('cfgFone').value);toast('Config salva!','ok');}
+function saveCreds(){
+    var p1=document.getElementById('np1').value,p2=document.getElementById('np2').value,ps=document.getElementById('nps').value,m=document.getElementById('cfgMsg');
+    if(p1){if(p1.length<6){m.innerText='Mín 6 chars';m.style.color='#ff1744';return;}if(p1!==p2){m.innerText='Senhas diferentes';m.style.color='#ff1744';return;}Store.set('th',hs(p1));}
+    if(ps) Store.set('ch',hs(ps));
+    m.innerText='✓ Credenciais atualizadas'; m.style.color='#00ff88'; toast('Senhas salvas!','ok');
+}
+
+// Init
+(function(){
+    var nm=Store.get('nm'); if(nm) document.getElementById('cfgNm').value=nm;
+    var emp=Store.get('emp'); if(emp) document.getElementById('cfgEmp').value=emp;    var fn=Store.get('fone'); if(fn) document.getElementById('cfgFone').value=fn;
+    var repo=Store.get('ghrepo'); if(repo) document.getElementById('ghRepo').value=repo;
+    if(Store.get('th')) document.getElementById('anote').innerText='Credenciais configuradas. Digite sua senha.';
+    checkMode();
+    // Verifica versão remota no GitHub em background
+    if(navigator.onLine){
+        try{
+            var x=new XMLHttpRequest();
+            x.open('GET','https://raw.githubusercontent.com/arsgoliveira/pendrive-tecnico-mf/main/config/versao.txt',true);
+            x.onload=function(){
+                if(x.status===200){
+                    var remote=x.responseText.trim();
+                    var local='3.0.2';
+                    try{var vf=ReadFile(GetBase()+'\\config\\versao.txt');if(vf)local=vf.trim();}catch(e){}
+                    if(remote&&remote!==local){
+                        var vb=document.getElementById('ghVer');
+                        if(vb){vb.innerText='v'+remote+' disponível!';vb.style.color='#ffab00';}
+                        log('dTerm','warn','Atualização disponível: v'+local+' → v'+remote+' (Painel → Atualizar)');
+                    }
+                }
+            };
+            x.send();
+        }catch(e){}
+    }
+})();
+</script>
+</body>
+</html>

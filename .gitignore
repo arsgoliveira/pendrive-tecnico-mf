@@ -1,0 +1,16 @@
+# Ferramentas portables (muito grandes para o GitHub)
+tools/
+
+# Relatórios gerados (dados de clientes — não versionar)
+relatorios/
+
+# Configurações locais (senhas em hash)
+config/dados.ini
+
+# Scripts de manutenção do projeto
+_fix-pendrive.ps1
+TESTE.hta
+
+# Windows
+Thumbs.db
+desktop.ini
